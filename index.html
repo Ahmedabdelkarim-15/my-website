@@ -3,191 +3,703 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="market.com — متجرك الشامل للملابس والمنتجات الغذائية والأدوات المنزلية بأسعار مناسبة والتوصيل للقاهرة والجيزة">
-  <title>market.com — ملابس · غذائيات · أدوات منزلية</title>
+  <meta name="description" content="market.com — متجرك الإلكتروني الشامل للملابس، المنتجات الغذائية، والأدوات المنزلية. دفع إلكتروني، كاش، إنستاباي، ومحافظ إلكترونية مع توصيل سريع للقاهرة والجيزة.">
+  <title>market.com — المتجر الشامل | تسوّق بذكاء وراحة</title>
+  
+  <!-- Font Awesome 6 Icons (Modern Vectors) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="theme-home">
 
-  <!-- ═══ الشريط العلوي الثابت ═══ -->
+  <!-- ═══ شريط الإعلانات العلوي (Announcement Bar) ═══ -->
+  <div class="announcement-bar">
+    <div class="announcement-inner">
+      <span><i class="fa-solid fa-truck-fast"></i> توصيل سريع لجميع مناطق القاهرة والجيزة</span>
+      <span class="announcement-divider">•</span>
+      <span><i class="fa-solid fa-shield-halved"></i> دفع آمن: كاش، محافظ ذكية، إنستاباي، وبطاقات بنكية</span>
+      <span class="announcement-divider">•</span>
+      <span><i class="fa-solid fa-rotate-left"></i> استبدال واسترجاع مجاني خلال 14 يوماً</span>
+    </div>
+  </div>
+
+  <!-- ═══ الشريط العلوي الثابت (Sticky Glass Header) ═══ -->
   <header class="header" id="header">
     <div class="header-inner">
-      <a href="#" class="logo" aria-label="الصفحة الرئيسية">
-        <div class="logo-icon">M</div>
-        <span class="logo-text">market.com</span>
+      
+      <!-- الشعار -->
+      <a href="#" class="logo" id="logoHome" aria-label="market.com الرئيسية">
+        <div class="logo-icon">
+          <i class="fa-solid fa-store"></i>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-text">market<span class="logo-accent">.com</span></span>
+          <span class="logo-tagline">متجرك الشامل الموثوق</span>
+        </div>
       </a>
 
+      <!-- خانة البحث العصرية الكبيرة -->
       <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="search" id="searchInput" placeholder="ابحث عن منتج... مثال: تيشيرت، أرز، خلاط" autocomplete="off">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="search" id="searchInput" placeholder="ابحث في آلاف المنتجات... مثال: تيشيرت، أرز، خلاط، زيت" autocomplete="off">
+        <button class="clear-search-btn" id="clearSearchBtn" aria-label="مسح البحث" style="display:none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <button class="cart-btn" id="cartBtn" aria-label="سلة المشتريات">
-        🛒
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
+      <!-- مجموعة أزرار الهيدر -->
+      <div class="header-actions">
+        
+        <!-- زر الدعم والتواصل -->
+        <button class="action-btn" id="supportBtn" title="الدعم الفني والتواصل" aria-label="الدعم الفني والتواصل">
+          <i class="fa-solid fa-headset"></i>
+          <span class="action-btn-label">الدعم</span>
+        </button>
+
+        <!-- زر المفضلة -->
+        <button class="action-btn" id="favBtn" title="قائمة المفضلة" aria-label="قائمة المفضلة">
+          <i class="fa-regular fa-heart"></i>
+          <span class="action-btn-label">المفضلة</span>
+          <span class="badge-count" id="favCount">0</span>
+        </button>
+
+        <!-- زر سلة المشتريات -->
+        <button class="action-btn cart-action-btn" id="cartBtn" title="سلة المشتريات" aria-label="سلة المشتريات">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="action-btn-label">السلة</span>
+          <span class="badge-count" id="cartCount">0</span>
+        </button>
+      </div>
+
     </div>
   </header>
 
-  <!-- ═══ شريط التنقل ═══ -->
+  <!-- ═══ شريط التنقل بين الأقسام (Modern Navigation Tabs) ═══ -->
   <nav class="nav-bar">
     <div class="nav-inner">
-      <button class="nav-btn active" data-section="home">🏠 الرئيسية</button>
-      <button class="nav-btn" data-section="clothes">🧥 ملابس</button>
-      <button class="nav-btn" data-section="food">🍎 منتجات غذائية</button>
-      <button class="nav-btn" data-section="homeware">🏠 أدوات منزلية</button>
+      <button class="nav-btn active" data-section="home">
+        <i class="fa-solid fa-house"></i>
+        <span>الرئيسية</span>
+      </button>
+      <button class="nav-btn" data-section="clothes">
+        <i class="fa-solid fa-shirt"></i>
+        <span>الملابس والأزياء</span>
+      </button>
+      <button class="nav-btn" data-section="food">
+        <i class="fa-solid fa-apple-whole"></i>
+        <span>المنتجات الغذائية</span>
+      </button>
+      <button class="nav-btn" data-section="homeware">
+        <i class="fa-solid fa-couch"></i>
+        <span>الأدوات المنزلية</span>
+      </button>
+      <button class="nav-btn nav-offers-btn" data-section="offers">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <span>عروض التوفير</span>
+      </button>
     </div>
   </nav>
 
-  <!-- ═══ البانر الترحيبي ═══ -->
-  <section class="hero" id="heroSection">
-    <div class="hero-content">
-      <h1>مرحباً بك في <span>market.com</span></h1>
-      <p>متجرك الشامل للملابس والمنتجات الغذائية والأدوات المنزلية — أسعار مناسبة وتوصيل للقاهرة والجيزة 🚛</p>
-      <div class="hero-badges">
-        <span class="hero-badge">🔥 عروض الأسبوع</span>
-        <span class="hero-badge">🚚 توصيل سريع</span>
-        <span class="hero-badge">💳 الدفع عند الاستلام</span>
-      </div>
-    </div>
-  </section>
+  <!-- ═══ غلاف المحتوى المتغير بالخلفيات (Theme Wrapper) ═══ -->
+  <div class="app-wrapper" id="appWrapper">
 
-  <!-- ═══ المحتوى الرئيسي ═══ -->
-  <main class="main-content">
-
-    <!-- بطاقات الأقسام الرئيسية (تظهر في الصفحة الرئيسية فقط) -->
-    <div id="categoriesSection">
-      <h2 class="section-title"><span class="icon">📂</span> تسوّق حسب القسم</h2>
-      <div class="categories-grid">
-        <div class="category-card" data-nav="clothes">
-          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop" alt="قسم الملابس" loading="lazy">
-          <div class="category-overlay">
+    <!-- ═══ بانر الصفحة الرئيسية (Home Hero) ═══ -->
+    <section class="hero hero-home" id="heroSection">
+      <div class="hero-backdrop"></div>
+      <div class="hero-content">
+        <div class="hero-pill">
+          <i class="fa-solid fa-sparkles"></i> تجربة تسوق عصرية بمعايير عالمية
+        </div>
+        <h1>كل ما تحتاجه أسرتك في مكان واحد مع <span>market.com</span></h1>
+        <p>تشكيلة مختارة بعناية من أجود الملابس، السلع التموينية الطازجة، ومستلزمات المنزل العصرية مع ضمان الجودة وأفضل الأسعار في مصر.</p>
+        
+        <div class="hero-trust-grid">
+          <div class="trust-item">
+            <i class="fa-solid fa-wallet"></i>
             <div>
-              <h3>🧥 الملابس</h3>
-              <span class="cat-count">رجالي · حريمي · أطفال</span>
+              <strong>طرق دفع مرنة</strong>
+              <small>كاش، إنستاباي، محافظ، بطاقات</small>
             </div>
           </div>
-        </div>
-        <div class="category-card" data-nav="food">
-          <img src="https://images.unsplash.com/photo-1543168256-418811576931?w=600&h=400&fit=crop" alt="قسم المنتجات الغذائية" loading="lazy">
-          <div class="category-overlay">
+          <div class="trust-item">
+            <i class="fa-solid fa-bolt"></i>
             <div>
-              <h3>🍎 المنتجات الغذائية</h3>
-              <span class="cat-count">أساسيات · مشروبات · معلبات</span>
+              <strong>شحن فوري</strong>
+              <small>القاهرة والجيزة لباب البيت</small>
             </div>
           </div>
-        </div>
-        <div class="category-card" data-nav="homeware">
-          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop" alt="قسم الأدوات المنزلية" loading="lazy">
-          <div class="category-overlay">
+          <div class="trust-item">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
             <div>
-              <h3>🏠 الأدوات المنزلية</h3>
-              <span class="cat-count">مطبخ · تنظيم · ديكور · أجهزة</span>
+              <strong>ضمان الاستبدال</strong>
+              <small>معاينة الشحنة قبل الاستلام</small>
             </div>
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ═══ بانر الفئات الديناميكي (Category Hero Banner) ═══ -->
+    <section class="category-banner" id="categoryBanner" style="display: none;">
+      <div class="category-banner-overlay"></div>
+      <div class="category-banner-content">
+        <span class="category-banner-tag" id="catBannerTag">تصفح القسم</span>
+        <h1 id="catBannerTitle">اسم القسم</h1>
+        <p id="catBannerDesc">وصف مميز للقسم وجودة المنتجات المعروضة فيه</p>
+      </div>
+    </section>
+
+    <!-- ═══ المحتوى الرئيسي (Main Content) ═══ -->
+    <main class="main-content">
+
+      <!-- بطاقات الأقسام الثلاثة الرئيسية المصورة -->
+      <section class="categories-showcase" id="categoriesSection">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge"><i class="fa-solid fa-layer-group"></i> الأقسام المتوفرة</span>
+            <h2 class="section-title">تسوّق حسب الأقسام الرئيسية</h2>
+          </div>
+          <p class="section-subtitle">اختر القسم للوصول السريع إلى المنتجات المتخصصة والعروض الحصرية</p>
+        </div>
+
+        <div class="categories-grid">
+          
+          <!-- بطاقة قسم الملابس -->
+          <div class="category-card card-clothes" data-nav="clothes">
+            <div class="card-bg-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop');"></div>
+            <div class="category-overlay">
+              <div class="cat-pill"><i class="fa-solid fa-shirt"></i> أزياء وموضة</div>
+              <h3>الملابس والأزياء</h3>
+              <p>تشكيلة واسعة: رجالي · حريمي · أطفال بخامات قطنية راقية</p>
+              <span class="cat-cta">تصفح القسم <i class="fa-solid fa-arrow-left"></i></span>
+            </div>
+          </div>
+
+          <!-- بطاقة قسم المنتجات الغذائية -->
+          <div class="category-card card-food" data-nav="food">
+            <div class="card-bg-img" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop');"></div>
+            <div class="category-overlay">
+              <div class="cat-pill"><i class="fa-solid fa-apple-whole"></i> طازج ومضمون</div>
+              <h3>المنتجات الغذائية</h3>
+              <p>أساسيات المطبخ · مواد تموينية · مشروبات · كراتين التوفير</p>
+              <span class="cat-cta">تصفح القسم <i class="fa-solid fa-arrow-left"></i></span>
+            </div>
+          </div>
+
+          <!-- بطاقة قسم الأدوات المنزلية -->
+          <div class="category-card card-homeware" data-nav="homeware">
+            <div class="card-bg-img" style="background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop');"></div>
+            <div class="category-overlay">
+              <div class="cat-pill"><i class="fa-solid fa-couch"></i> عصرية وأنيقة</div>
+              <h3>الأدوات المنزلية</h3>
+              <p>أطقم طهي جرانيت · منظمات · ديكور · أجهزة منزلية ذكية</p>
+              <span class="cat-cta">تصفح القسم <i class="fa-solid fa-arrow-left"></i></span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- قسم عروض اليوم والتوفير -->
+      <section class="products-section" id="offersSection">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge badge-danger"><i class="fa-solid fa-tag"></i> خصومات لفترة محدودة</span>
+            <h2 class="section-title">عروض اليوم الحصرية</h2>
+          </div>
+          <button class="view-all-link" data-nav="offers">عرض جميع العروض <i class="fa-solid fa-arrow-left"></i></button>
+        </div>
+        <div class="products-grid" id="offersGrid"></div>
+      </section>
+
+      <!-- قسم الأكثر طلباً -->
+      <section class="products-section" id="popularSection">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge badge-warning"><i class="fa-solid fa-fire"></i> الأكثر مبيعاً</span>
+            <h2 class="section-title">المنتجات الأكثر طلباً</h2>
+          </div>
+        </div>
+        <div class="products-grid" id="popularGrid"></div>
+      </section>
+
+      <!-- قسم المنتجات المفلترة (أقسام الموقع الفرعية) -->
+      <section class="filtered-view" id="filteredSection" style="display:none;">
+        <div class="filtered-header">
+          <div>
+            <h2 class="filtered-main-title" id="filteredTitle">عنوان القسم</h2>
+            <span class="filtered-count" id="filteredCount">0 منتج</span>
+          </div>
+
+          <!-- شريط الترتيب -->
+          <div class="sort-bar">
+            <label for="sortSelect"><i class="fa-solid fa-arrow-down-short-wide"></i> ترتيب:</label>
+            <select id="sortSelect">
+              <option value="popular">الأكثر شعبية وطلباً</option>
+              <option value="price-asc">السعر: من الأقل للأعلى</option>
+              <option value="price-desc">السعر: من الأعلى للأقل</option>
+              <option value="rating">الأعلى تقييماً</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- فلاتر الأقسام الفرعية المتجاوبة -->
+        <div class="sub-filters" id="subFilters"></div>
+
+        <!-- شبكة عرض المنتجات المفلترة -->
+        <div class="products-grid" id="filteredGrid"></div>
+      </section>
+
+      <!-- قسم نتائج البحث الفوري -->
+      <section class="search-view" id="searchSection" style="display:none;">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge"><i class="fa-solid fa-magnifying-glass"></i> نتائج فورية</span>
+            <h2 class="section-title" id="searchTitle">نتائج البحث</h2>
+          </div>
+          <button class="back-home-link" id="backToHomeBtn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</button>
+        </div>
+        <div class="products-grid" id="searchGrid"></div>
+      </section>
+
+    </main>
+
+  </div><!-- نهاية app-wrapper -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       الأدراج الجانبية والنوافذ المنبثقة (Drawers & Modals)
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- الخلفية الضبابية المشتركة للأدراج -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <!-- ═══ 1. درج سلة المشتريات والدفع (Cart & Multi-Payment Drawer) ═══ -->
+  <aside class="side-drawer" id="cartDrawer" aria-label="سلة المشتريات">
+    
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <i class="fa-solid fa-bag-shopping drawer-icon"></i>
+        <h3>سلة المشتريات</h3>
+        <span class="drawer-badge" id="cartDrawerCount">0 منتج</span>
+      </div>
+      <button class="drawer-close-btn" id="cartClose" aria-label="إغلاق السلة">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
-    <!-- قسم الأكثر طلباً -->
-    <div id="popularSection">
-      <h2 class="section-title"><span class="icon">🔥</span> الأكثر طلباً</h2>
-      <div class="products-grid" id="popularGrid"></div>
+    <!-- قائمة منتجات السلة -->
+    <div class="drawer-body" id="cartItems">
+      <div class="empty-state" id="cartEmpty">
+        <div class="empty-icon-wrap">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <h4>سلتك فارغة حالياً</h4>
+        <p>استكشف أفضل المنتجات والعروض وأضف ما تحتاجه بكل سهولة</p>
+        <button class="btn-primary-sm" id="startShoppingBtn">ابدأ التسوق الآن</button>
+      </div>
     </div>
 
-    <!-- قسم عروض اليوم -->
-    <div id="offersSection">
-      <h2 class="section-title"><span class="icon">🏷️</span> عروض اليوم</h2>
-      <div class="products-grid" id="offersGrid"></div>
-    </div>
-
-    <!-- قسم المنتجات (الأقسام المفلترة) -->
-    <div id="filteredSection" style="display:none;">
-      <h2 class="section-title" id="filteredTitle"></h2>
-
-      <!-- فلاتر فرعية -->
-      <div class="sub-filters" id="subFilters"></div>
-
-      <!-- ترتيب -->
-      <div class="sort-bar">
-        <label for="sortSelect">ترتيب حسب:</label>
-        <select id="sortSelect">
-          <option value="popular">الأكثر طلباً</option>
-          <option value="price-asc">السعر: من الأقل للأعلى</option>
-          <option value="price-desc">السعر: من الأعلى للأقل</option>
-        </select>
+    <!-- أسفل السلة: الإجمالي ونموذج الطلب متعدد وسائل الدفع -->
+    <div class="drawer-footer" id="cartFooter" style="display:none;">
+      
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>المجموع الفرعي:</span>
+          <span id="cartSubtotal">0 ج.م</span>
+        </div>
+        <div class="summary-row">
+          <span>رسوم التوصيل (القاهرة والجيزة):</span>
+          <span class="text-success"><i class="fa-solid fa-truck-fast"></i> مجاني للمشتريات الكبيرة</span>
+        </div>
+        <div class="summary-row total-row">
+          <strong>الإجمالي النهائي:</strong>
+          <strong class="total-price" id="cartTotal">0 ج.م</strong>
+        </div>
       </div>
 
-      <div class="products-grid" id="filteredGrid"></div>
-    </div>
+      <button class="btn-checkout" id="proceedBtn">
+        <span>متابعة إتمام الطلب</span>
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
 
-    <!-- قسم نتائج البحث -->
-    <div id="searchSection" style="display:none;">
-      <h2 class="section-title" id="searchTitle"></h2>
-      <div class="products-grid" id="searchGrid"></div>
-    </div>
+      <!-- نموذج إتمام الطلب الشامل مع خيارات الدفع -->
+      <div class="checkout-panel" id="checkoutForm">
+        
+        <h4 class="checkout-heading">
+          <i class="fa-solid fa-credit-card"></i> 1. اختر وسيلة الدفع المفضلة
+        </h4>
 
-  </main>
+        <!-- أزرار اختيار وسيلة الدفع المتطورة -->
+        <div class="payment-tabs" id="paymentTabs">
+          
+          <!-- الخيار 1: كاش عند الاستلام -->
+          <label class="payment-option active" data-method="cod">
+            <input type="radio" name="paymentMethod" value="cod" checked>
+            <div class="payment-option-content">
+              <div class="option-icon icon-cod"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+              <div class="option-text">
+                <strong>الدفع عند الاستلام (كاش)</strong>
+                <small>عاين طلبك وادفع نقداً عند باب بيتك</small>
+              </div>
+            </div>
+          </label>
 
-  <!-- ═══ خلفية السلة (Overlay) ═══ -->
-  <div class="cart-overlay" id="cartOverlay"></div>
+          <!-- الخيار 2: المحافظ الإلكترونية المصرية -->
+          <label class="payment-option" data-method="wallet">
+            <input type="radio" name="paymentMethod" value="wallet">
+            <div class="payment-option-content">
+              <div class="option-icon icon-wallet"><i class="fa-solid fa-mobile-screen-button"></i></div>
+              <div class="option-text">
+                <strong>المحافظ الإلكترونية الذكية</strong>
+                <small>فودافون كاش · أورنج · اتصالات · WE Pay</small>
+              </div>
+            </div>
+          </label>
 
-  <!-- ═══ درج السلة ═══ -->
-  <aside class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h2>🛒 سلة المشتريات</h2>
-      <button class="cart-close" id="cartClose" aria-label="إغلاق السلة">✕</button>
-    </div>
+          <!-- الخيار 3: إنستاباي والحسابات البنكية -->
+          <label class="payment-option" data-method="instapay">
+            <input type="radio" name="paymentMethod" value="instapay">
+            <div class="payment-option-content">
+              <div class="option-icon icon-bank"><i class="fa-solid fa-building-columns"></i></div>
+              <div class="option-text">
+                <strong>إنستاباي / تحويل بنكي فوري</strong>
+                <small>InstaPay · البنك الأهلي · بنك مصر · CIB</small>
+              </div>
+            </div>
+          </label>
 
-    <div class="cart-items" id="cartItems">
-      <div class="cart-empty" id="cartEmpty">
-        <div class="icon">🛒</div>
-        <p>السلة فارغة</p>
-      </div>
-    </div>
+          <!-- الخيار 4: البطاقات البنكية -->
+          <label class="payment-option" data-method="card">
+            <input type="radio" name="paymentMethod" value="card">
+            <div class="payment-option-content">
+              <div class="option-icon icon-card"><i class="fa-solid fa-credit-card"></i></div>
+              <div class="option-text">
+                <strong>البطاقات البنكية (فيزا / ماستركارد / ميزة)</strong>
+                <small>دفع إلكتروني آمن برابط معتمد</small>
+              </div>
+            </div>
+          </label>
 
-    <div class="cart-footer" id="cartFooter" style="display:none;">
-      <div class="cart-total">
-        <span>الإجمالي:</span>
-        <span class="total-amount" id="cartTotal">0 ج.م</span>
-      </div>
+        </div>
 
-      <button class="proceed-btn" id="proceedBtn">متابعة الطلب ✏️</button>
+        <!-- الصندوق التفاعلي لمعلومات وسيلة الدفع المختارة -->
+        <div class="payment-details-box" id="paymentDetailsBox">
+          
+          <!-- تفاصيل المحافظ الإلكترونية -->
+          <div class="payment-detail-view" id="walletDetailView" style="display:none;">
+            <div class="instruction-banner">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>حول قيمة الطلب إلى رقم المحفظة المعتمد:</span>
+            </div>
+            <div class="copy-box">
+              <span class="copy-val" id="walletNumberCopy">01143950895</span>
+              <button type="button" class="btn-copy" data-copy="01143950895">
+                <i class="fa-solid fa-copy"></i> نسخ
+              </button>
+            </div>
+            <div class="form-group">
+              <label for="senderWallet">رقم المحفظة التي حوّلت منها (اختياري لتأكيد أسرع):</label>
+              <input type="tel" id="senderWallet" placeholder="مثال: 010xxxxxxxx" dir="ltr">
+            </div>
+          </div>
 
-      <div class="checkout-form" id="checkoutForm">
-        <h3>بيانات التوصيل</h3>
+          <!-- تفاصيل إنستاباي والتحويل البنكي -->
+          <div class="payment-detail-view" id="instapayDetailView" style="display:none;">
+            <div class="instruction-banner">
+              <i class="fa-solid fa-building-columns"></i>
+              <span>معرّف الدفع الفوري عبر تطبيق إنستاباي (IPA):</span>
+            </div>
+            <div class="copy-box">
+              <span class="copy-val" id="instapayHandleCopy">market@instapay</span>
+              <button type="button" class="btn-copy" data-copy="market@instapay">
+                <i class="fa-solid fa-copy"></i> نسخ
+              </button>
+            </div>
+            <div class="bank-account-info">
+              <small>أو عبر التحويل البنكي (البنك الأهلي المصري):</small>
+              <div class="copy-box mt-1">
+                <span class="copy-val">EG920002000100000001234567890</span>
+                <button type="button" class="btn-copy" data-copy="EG920002000100000001234567890">
+                  <i class="fa-solid fa-copy"></i> نسخ IBAN
+                </button>
+              </div>
+            </div>
+            <div class="form-group mt-2">
+              <label for="senderInstapay">اسم صاحب الحساب أو الرقم المرجعي للتحويل:</label>
+              <input type="text" id="senderInstapay" placeholder="مثال: أحمد محمد / Ref #123456">
+            </div>
+          </div>
+
+          <!-- تفاصيل البطاقات البنكية وميزة -->
+          <div class="payment-detail-view" id="cardDetailView" style="display:none;">
+            <div class="cards-badges-row">
+              <span class="card-chip"><i class="fa-brands fa-cc-visa"></i> Visa</span>
+              <span class="card-chip"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span>
+              <span class="card-chip"><i class="fa-solid fa-shield"></i> ميزة الوطنية Meeza</span>
+            </div>
+            <p class="card-note">
+              <i class="fa-solid fa-lock text-success"></i> سيصلك رابط دفع إلكتروني مشفر وآمن عبر رسالة الواتساب لإدخال بيانات بطاقتك بأمان وسرية تامة 256-bit SSL.
+            </p>
+          </div>
+
+        </div><!-- نهاية payment-details-box -->
+
+        <h4 class="checkout-heading mt-3">
+          <i class="fa-solid fa-map-location-dot"></i> 2. بيانات التوصيل والتواصل
+        </h4>
+
+        <!-- حقول بيانات العميل -->
         <div class="form-group">
           <label for="custName">الاسم الكامل *</label>
-          <input type="text" id="custName" placeholder="مثال: أحمد محمد">
-          <div class="error-msg">يرجى كتابة الاسم</div>
+          <input type="text" id="custName" placeholder="مثال: أحمد عبد الكريم" required>
+          <div class="error-msg">يرجى إدخال اسم العميل بشكل صحيح</div>
         </div>
+
         <div class="form-group">
-          <label for="custPhone">رقم الهاتف *</label>
-          <input type="tel" id="custPhone" placeholder="مثال: 01012345678" dir="ltr">
-          <div class="error-msg">يرجى كتابة رقم هاتف صحيح (11 رقم)</div>
+          <label for="custPhone">رقم هاتف التواصل والواتساب *</label>
+          <input type="tel" id="custPhone" placeholder="مثال: 01143950895" dir="ltr" required>
+          <div class="error-msg">يرجى كتابة رقم هاتف مصري صحيح (11 رقماً)</div>
         </div>
+
         <div class="form-group">
-          <label for="custAddress">العنوان التفصيلي *</label>
-          <input type="text" id="custAddress" placeholder="مثال: 15 شارع النيل، الدقي، الجيزة">
-          <div class="error-msg">يرجى كتابة العنوان</div>
+          <label for="custAddress">العنوان التفصيلي (المنطقة / الشارع / رقم العمارة) *</label>
+          <input type="text" id="custAddress" placeholder="مثال: 22 شارع التحرير، الدقي، الجيزة - شقة 4" required>
+          <div class="error-msg">يرجى كتابة العنوان بالتفصيل لضمان سرعة التوصيل</div>
         </div>
+
         <div class="form-group">
-          <label for="custNotes">ملاحظات (اختياري)</label>
-          <textarea id="custNotes" placeholder="مثال: الدور الثالث — الشقة 5"></textarea>
+          <label for="custNotes">ملاحظات إضافية للتوصيل (اختياري)</label>
+          <textarea id="custNotes" rows="2" placeholder="مثال: التوصيل يفضل بعد الساعة 4 مساءً، أو رن الجرس مرتين"></textarea>
         </div>
-        <button class="whatsapp-btn" id="whatsappBtn">
-          تأكيد الطلب عبر واتساب 📱
+
+        <!-- زر إرسال الطلب المنسق لواتساب -->
+        <button class="btn-whatsapp-submit" id="whatsappBtn">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>تأكيد الطلب وإرسال الفاتورة عبر واتساب</span>
         </button>
-      </div>
-    </div>
+
+        <p class="privacy-note">
+          <i class="fa-solid fa-shield-check"></i> بياناتك محمية ومشفرة، ولا نقوم بمشاركة أي معلومات بنكية مع أطراف ثالثة.
+        </p>
+
+      </div><!-- نهاية checkout-panel -->
+
+    </div><!-- نهاية drawer-footer -->
+
   </aside>
 
-  <!-- ═══ إشعار Toast ═══ -->
-  <div class="toast" id="toast"></div>
+  <!-- ═══ 2. درج قائمة المفضلة (Wishlist / Favorites Drawer) ═══ -->
+  <aside class="side-drawer" id="favDrawer" aria-label="قائمة المفضلة">
+    
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <i class="fa-solid fa-heart drawer-icon text-danger"></i>
+        <h3>قائمة المفضلة</h3>
+        <span class="drawer-badge" id="favDrawerCount">0 منتج</span>
+      </div>
+      <button class="drawer-close-btn" id="favClose" aria-label="إغلاق المفضلة">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
 
-  <!-- ═══ الفوتر ═══ -->
+    <!-- عناصر المفضلة -->
+    <div class="drawer-body" id="favItems">
+      <div class="empty-state" id="favEmpty">
+        <div class="empty-icon-wrap">
+          <i class="fa-regular fa-heart"></i>
+        </div>
+        <h4>لا توجد منتجات في المفضلة</h4>
+        <p>اضغط على أيقونة القلب على أي منتج لحفظه والرجوع إليه لاحقاً بسهولة</p>
+        <button class="btn-primary-sm" id="exploreForFavBtn">تصفح المنتجات الآن</button>
+      </div>
+    </div>
+
+    <div class="drawer-footer" id="favFooter" style="display:none;">
+      <button class="btn-primary-block" id="addAllFavToCartBtn">
+        <i class="fa-solid fa-cart-plus"></i> إضافة جميع المفضلة للسلة
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ═══ 3. درج الدعم الفني والتواصل (Support & Contact Drawer) ═══ -->
+  <aside class="side-drawer" id="supportDrawer" aria-label="الدعم الفني والتواصل">
+    
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <i class="fa-solid fa-headset drawer-icon"></i>
+        <h3>مركز الدعم والتواصل</h3>
+      </div>
+      <button class="drawer-close-btn" id="supportClose" aria-label="إغلاق الدعم">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body support-body">
+      
+      <!-- كارت خدمة العملاء المباشرة -->
+      <div class="support-hero-card">
+        <div class="support-avatar">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <h4>فريق market.com جاهز لمساعدتك</h4>
+        <p>نحن متاحون يومياً للرد على استفساراتكم ومتابعة طلباتكم بكل اهتمام</p>
+        
+        <div class="quick-contact-actions">
+          <a href="https://wa.me/201143950895" target="_blank" rel="noopener noreferrer" class="btn-support-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i> تواصل فوري عبر واتساب
+          </a>
+          <a href="tel:01143950895" class="btn-support-phone">
+            <i class="fa-solid fa-phone"></i> اتصال هاتفي مباشر
+          </a>
+        </div>
+      </div>
+
+      <!-- معلومات ساعات العمل والتغطية -->
+      <div class="support-info-cards">
+        <div class="info-card">
+          <i class="fa-solid fa-clock"></i>
+          <div>
+            <strong>ساعات العمل الرسمية</strong>
+            <small>يومياً من 9:00 ص إلى 11:00 م</small>
+          </div>
+        </div>
+        <div class="info-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            <strong>نطاق التوصيل</strong>
+            <small>جميع مناطق محافظتي القاهرة والجيزة</small>
+          </div>
+        </div>
+        <div class="info-card">
+          <i class="fa-solid fa-envelope"></i>
+          <div>
+            <strong>البريد الإلكتروني للدعم</strong>
+            <small>support@market.com</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- الأسئلة الشائعة (FAQ Accordion) -->
+      <div class="support-faq-section">
+        <h4><i class="fa-solid fa-circle-question"></i> الأسئلة الأكثر شيوعاً</h4>
+
+        <details class="faq-item">
+          <summary>ما هي طرق الدفع المتاحة بالمتجر؟</summary>
+          <div class="faq-content">
+            نوفر لك 4 وسائل دفع سهلة ومريحة: الدفع عند الاستلام نقداً (كاش)، المحافظ الإلكترونية الذكية (فودافون كاش، أورنج، اتصالات، وي باي)، الدفع الفوري عبر إنستاباي أو الحسابات البنكية، والبطاقات الائتمانية والبنكية (فيزا وماستركارد وميزة).
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>كم يستغرق التوصيل للقاهرة والجيزة؟</summary>
+          <div class="faq-content">
+            يتم تجهيز وشحن الطلبات في نفس اليوم أو اليوم التالي مباشرة، لتصلك الشحنة خلال 24 إلى 48 ساعة كحد أقصى.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>ما هي سياسة الاستبدال والاسترجاع؟</summary>
+          <div class="faq-content">
+            يمكنك معاينة المنتج عند الاستلام بالكامل، كما يحق لك طلب الاستبدال أو الاسترجاع مجاناً خلال 14 يوماً من تاريخ الاستلام في حالته الأصلية بدون أي رسوم إضافية.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>كيف يمكنني تتبع طلبي؟</summary>
+          <div class="faq-content">
+            بمجرد إرسال طلبك عبر المتجر، سيقوم فريق خدمة العملاء بالتواصل معك مباشرة عبر واتساب برقم بوليصة الشحنة ومتابعة خط سير مندوب التوصيل حتى باب منزلك.
+          </div>
+        </details>
+      </div>
+
+    </div><!-- نهاية drawer-body -->
+
+  </aside>
+
+  <!-- ═══ الزر العائم للدعم السريع (Floating Action Button) ═══ -->
+  <div class="floating-actions">
+    <button class="fab-support" id="fabSupportBtn" title="تواصل مع الدعم الفني" aria-label="تواصل مع الدعم الفني">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span class="fab-text">تواصل معنا</span>
+    </button>
+    <button class="fab-scroll-top" id="scrollTopBtn" title="العودة للأعلى" aria-label="العودة للأعلى">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+  </div>
+
+  <!-- ═══ إشعار الإضافة (Toast Alert) ═══ -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check toast-icon"></i>
+    <span class="toast-message" id="toastMessage">تمت العملية بنجاح</span>
+  </div>
+
+  <!-- ═══ الفوتر العصري المتكامل (Modern Footer) ═══ -->
   <footer class="footer">
-    <p>© 2026 <strong>market.com</strong> — جميع الحقوق محفوظة | <a href="https://wa.me/201143950895" target="_blank" rel="noopener noreferrer">تواصل معنا عبر واتساب</a></p>
+    <div class="footer-inner">
+      
+      <!-- نبذة عن المتجر -->
+      <div class="footer-col footer-about">
+        <div class="logo">
+          <div class="logo-icon"><i class="fa-solid fa-store"></i></div>
+          <span class="logo-text">market<span class="logo-accent">.com</span></span>
+        </div>
+        <p>متجرك الإلكتروني المصري المفضل لشراء الملابس الفاخرة، المنتجات الغذائية الأساسية، والأدوات المنزلية العصرية بأعلى جودة وأفضل الأسعار مع التوصيل السريع للقاهرة والجيزة.</p>
+        
+        <div class="footer-payment-icons">
+          <span class="pay-badge" title="فودافون كاش ومحافظ ذكية"><i class="fa-solid fa-mobile-screen"></i> محفظة ذكية</span>
+          <span class="pay-badge" title="إنستاباي فوري"><i class="fa-solid fa-bolt"></i> إنستاباي</span>
+          <span class="pay-badge" title="كاش عند الاستلام"><i class="fa-solid fa-money-bill-wave"></i> دفع كاش</span>
+          <span class="pay-badge" title="ميزة الوطنية"><i class="fa-solid fa-shield"></i> بطاقة ميزة</span>
+          <span class="pay-badge" title="فيزا وماستركارد"><i class="fa-brands fa-cc-visa"></i> <i class="fa-brands fa-cc-mastercard"></i></span>
+        </div>
+      </div>
+
+      <!-- روابط الأقسام -->
+      <div class="footer-col">
+        <h4>أقسام المتجر</h4>
+        <ul class="footer-links">
+          <li><a href="#" data-footer-nav="clothes"><i class="fa-solid fa-angle-left"></i> قسم الملابس والأزياء</a></li>
+          <li><a href="#" data-footer-nav="food"><i class="fa-solid fa-angle-left"></i> قسم المنتجات الغذائية</a></li>
+          <li><a href="#" data-footer-nav="homeware"><i class="fa-solid fa-angle-left"></i> قسم الأدوات المنزلية</a></li>
+          <li><a href="#" data-footer-nav="offers"><i class="fa-solid fa-angle-left"></i> عروض التوفير الأسبوعية</a></li>
+        </ul>
+      </div>
+
+      <!-- خدمة العملاء والمساعدة -->
+      <div class="footer-col">
+        <h4>خدمة العملاء</h4>
+        <ul class="footer-links">
+          <li><a href="#" id="footerSupportLink"><i class="fa-solid fa-angle-left"></i> مركز الدعم والمساعدة</a></li>
+          <li><a href="#" id="footerFavLink"><i class="fa-solid fa-angle-left"></i> قائمة المفضلة</a></li>
+          <li><a href="https://wa.me/201143950895" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-angle-left"></i> استفسارات الواتساب المباشرة</a></li>
+          <li><a href="tel:01143950895"><i class="fa-solid fa-angle-left"></i> الخط الساخن: 01143950895</a></li>
+        </ul>
+      </div>
+
+      <!-- سياسات وضمانات -->
+      <div class="footer-col">
+        <h4>سياسات وضمانات</h4>
+        <ul class="footer-links">
+          <li><span><i class="fa-solid fa-check text-success"></i> معاينة الشحنة قبل الاستلام</span></li>
+          <li><span><i class="fa-solid fa-check text-success"></i> استرجاع مجاني خلال 14 يوماً</span></li>
+          <li><span><i class="fa-solid fa-check text-success"></i> خصوصية وتشفير كامل للبيانات</span></li>
+          <li><span><i class="fa-solid fa-check text-success"></i> توصيل آمن وموثوق لباب البيت</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 جميع الحقوق محفوظة لمتجر <strong>market.com</strong> — تسوّق بثقة وأمان 🇪🇬</p>
+    </div>
   </footer>
 
   <!-- ═══ ملفات JavaScript ═══ -->
