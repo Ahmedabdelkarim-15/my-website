@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="market.com — متجرك الشامل للملابس والمنتجات الغذائية والأدوات المنزلية بأسعار مناسبة والتوصيل للقاهرة والجيزة">
+  <title>market.com — ملابس · غذائيات · أدوات منزلية</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ═══ الشريط العلوي الثابت ═══ -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="الصفحة الرئيسية">
+        <div class="logo-icon">M</div>
+        <span class="logo-text">market.com</span>
+      </a>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="searchInput" placeholder="ابحث عن منتج... مثال: تيشيرت، أرز، خلاط" autocomplete="off">
+      </div>
+
+      <button class="cart-btn" id="cartBtn" aria-label="سلة المشتريات">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ شريط التنقل ═══ -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <button class="nav-btn active" data-section="home">🏠 الرئيسية</button>
+      <button class="nav-btn" data-section="clothes">🧥 ملابس</button>
+      <button class="nav-btn" data-section="food">🍎 منتجات غذائية</button>
+      <button class="nav-btn" data-section="homeware">🏠 أدوات منزلية</button>
+    </div>
+  </nav>
+
+  <!-- ═══ البانر الترحيبي ═══ -->
+  <section class="hero" id="heroSection">
+    <div class="hero-content">
+      <h1>مرحباً بك في <span>market.com</span></h1>
+      <p>متجرك الشامل للملابس والمنتجات الغذائية والأدوات المنزلية — أسعار مناسبة وتوصيل للقاهرة والجيزة 🚛</p>
+      <div class="hero-badges">
+        <span class="hero-badge">🔥 عروض الأسبوع</span>
+        <span class="hero-badge">🚚 توصيل سريع</span>
+        <span class="hero-badge">💳 الدفع عند الاستلام</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ المحتوى الرئيسي ═══ -->
+  <main class="main-content">
+
+    <!-- بطاقات الأقسام الرئيسية (تظهر في الصفحة الرئيسية فقط) -->
+    <div id="categoriesSection">
+      <h2 class="section-title"><span class="icon">📂</span> تسوّق حسب القسم</h2>
+      <div class="categories-grid">
+        <div class="category-card" data-nav="clothes">
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop" alt="قسم الملابس" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <h3>🧥 الملابس</h3>
+              <span class="cat-count">رجالي · حريمي · أطفال</span>
+            </div>
+          </div>
+        </div>
+        <div class="category-card" data-nav="food">
+          <img src="https://images.unsplash.com/photo-1543168256-418811576931?w=600&h=400&fit=crop" alt="قسم المنتجات الغذائية" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <h3>🍎 المنتجات الغذائية</h3>
+              <span class="cat-count">أساسيات · مشروبات · معلبات</span>
+            </div>
+          </div>
+        </div>
+        <div class="category-card" data-nav="homeware">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop" alt="قسم الأدوات المنزلية" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <h3>🏠 الأدوات المنزلية</h3>
+              <span class="cat-count">مطبخ · تنظيم · ديكور · أجهزة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم الأكثر طلباً -->
+    <div id="popularSection">
+      <h2 class="section-title"><span class="icon">🔥</span> الأكثر طلباً</h2>
+      <div class="products-grid" id="popularGrid"></div>
+    </div>
+
+    <!-- قسم عروض اليوم -->
+    <div id="offersSection">
+      <h2 class="section-title"><span class="icon">🏷️</span> عروض اليوم</h2>
+      <div class="products-grid" id="offersGrid"></div>
+    </div>
+
+    <!-- قسم المنتجات (الأقسام المفلترة) -->
+    <div id="filteredSection" style="display:none;">
+      <h2 class="section-title" id="filteredTitle"></h2>
+
+      <!-- فلاتر فرعية -->
+      <div class="sub-filters" id="subFilters"></div>
+
+      <!-- ترتيب -->
+      <div class="sort-bar">
+        <label for="sortSelect">ترتيب حسب:</label>
+        <select id="sortSelect">
+          <option value="popular">الأكثر طلباً</option>
+          <option value="price-asc">السعر: من الأقل للأعلى</option>
+          <option value="price-desc">السعر: من الأعلى للأقل</option>
+        </select>
+      </div>
+
+      <div class="products-grid" id="filteredGrid"></div>
+    </div>
+
+    <!-- قسم نتائج البحث -->
+    <div id="searchSection" style="display:none;">
+      <h2 class="section-title" id="searchTitle"></h2>
+      <div class="products-grid" id="searchGrid"></div>
+    </div>
+
+  </main>
+
+  <!-- ═══ خلفية السلة (Overlay) ═══ -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <!-- ═══ درج السلة ═══ -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>🛒 سلة المشتريات</h2>
+      <button class="cart-close" id="cartClose" aria-label="إغلاق السلة">✕</button>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty" id="cartEmpty">
+        <div class="icon">🛒</div>
+        <p>السلة فارغة</p>
+      </div>
+    </div>
+
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-total">
+        <span>الإجمالي:</span>
+        <span class="total-amount" id="cartTotal">0 ج.م</span>
+      </div>
+
+      <button class="proceed-btn" id="proceedBtn">متابعة الطلب ✏️</button>
+
+      <div class="checkout-form" id="checkoutForm">
+        <h3>بيانات التوصيل</h3>
+        <div class="form-group">
+          <label for="custName">الاسم الكامل *</label>
+          <input type="text" id="custName" placeholder="مثال: أحمد محمد">
+          <div class="error-msg">يرجى كتابة الاسم</div>
+        </div>
+        <div class="form-group">
+          <label for="custPhone">رقم الهاتف *</label>
+          <input type="tel" id="custPhone" placeholder="مثال: 01012345678" dir="ltr">
+          <div class="error-msg">يرجى كتابة رقم هاتف صحيح (11 رقم)</div>
+        </div>
+        <div class="form-group">
+          <label for="custAddress">العنوان التفصيلي *</label>
+          <input type="text" id="custAddress" placeholder="مثال: 15 شارع النيل، الدقي، الجيزة">
+          <div class="error-msg">يرجى كتابة العنوان</div>
+        </div>
+        <div class="form-group">
+          <label for="custNotes">ملاحظات (اختياري)</label>
+          <textarea id="custNotes" placeholder="مثال: الدور الثالث — الشقة 5"></textarea>
+        </div>
+        <button class="whatsapp-btn" id="whatsappBtn">
+          تأكيد الطلب عبر واتساب 📱
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ إشعار Toast ═══ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══ الفوتر ═══ -->
+  <footer class="footer">
+    <p>© 2026 <strong>market.com</strong> — جميع الحقوق محفوظة | <a href="https://wa.me/201143950895" target="_blank" rel="noopener noreferrer">تواصل معنا عبر واتساب</a></p>
+  </footer>
+
+  <!-- ═══ ملفات JavaScript ═══ -->
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
