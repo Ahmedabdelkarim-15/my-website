@@ -492,14 +492,27 @@
                 </div>
               </label>
 
-              <!-- خيار 4: البطاقات البنكية -->
+              <!-- خيار 4: البطاقات البنكية (Paymob) -->
               <label class="payment-card-option" data-method="card">
                 <input type="radio" name="modalPaymentMethod" value="card">
                 <div class="payment-card-inner">
                   <div class="p-icon card-icon"><i class="fa-solid fa-credit-card"></i></div>
                   <div class="p-info">
-                    <strong>بطاقة بنكية (فيزا / ماستركارد / ميزة)</strong>
-                    <small>دفع إلكتروني مباشر وبوابة دفع مشفرة</small>
+                    <strong>بطاقة بنكية / Paymob (فيزا / ماستركارد / ميزة)</strong>
+                    <small>بوابة دفع Paymob المعتمدة والمشفرة محلياً</small>
+                  </div>
+                  <i class="fa-solid fa-circle-check check-indicator"></i>
+                </div>
+              </label>
+
+              <!-- خيار 5: Stripe العالمي (Apple Pay / بطاقات دولية) -->
+              <label class="payment-card-option" data-method="stripe">
+                <input type="radio" name="modalPaymentMethod" value="stripe">
+                <div class="payment-card-inner">
+                  <div class="p-icon" style="background:#f5f3ff; color:#6366f1;"><i class="fa-brands fa-stripe" style="font-size:1.4rem;"></i></div>
+                  <div class="p-info">
+                    <strong>Stripe (دفع دولي / Apple Pay)</strong>
+                    <small>بوابة Stripe العالمية للبطاقات والدفع الرقمي</small>
                   </div>
                   <i class="fa-solid fa-circle-check check-indicator"></i>
                 </div>
@@ -577,6 +590,19 @@
                       <label for="cardCvvInput">رمز الأمان (CVV)</label>
                       <input type="password" id="cardCvvInput" placeholder="123" maxlength="3" dir="ltr">
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- تفاصيل دفع Stripe -->
+              <div class="detail-block" id="modalStripeDetails" style="display:none;">
+                <div class="detail-alert" style="background: rgba(99, 102, 241, 0.08); color: #4338ca; border-color: rgba(99, 102, 241, 0.25);">
+                  <i class="fa-brands fa-stripe" style="font-size: 1.8rem; color: #6366f1;"></i>
+                  <div>
+                    <strong>بوابة دفع Stripe العالمية</strong>
+                    <p style="margin: 4px 0 0; font-size: 0.85rem; color: #4b5563;">
+                      سيتم توجيهك فور النقر على "تأكيد الطلب والدفع" إلى صفحة الدفع المؤمنة بتقنيات 3D Secure لتمرير العملية بسلاسة.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -950,6 +976,8 @@
           <span class="pay-badge"><i class="fa-solid fa-money-bill-wave"></i> دفع عند الاستلام</span>
           <span class="pay-badge"><i class="fa-solid fa-shield"></i> بطاقة ميزة الوطنية</span>
           <span class="pay-badge"><i class="fa-brands fa-cc-visa"></i> <i class="fa-brands fa-cc-mastercard"></i></span>
+          <span class="pay-badge"><i class="fa-solid fa-shield-halved"></i> Paymob</span>
+          <span class="pay-badge"><i class="fa-brands fa-stripe"></i> Stripe</span>
         </div>
       </div>
 
@@ -970,6 +998,7 @@
           <li><a href="#" id="footerCouponsLink"><i class="fa-solid fa-angle-left"></i> أكواد وكوبونات الخصم</a></li>
           <li><a href="#" id="footerSupportLink"><i class="fa-solid fa-angle-left"></i> مركز الدعم والمساعدة</a></li>
           <li><a href="https://wa.me/201143950895" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-angle-left"></i> واتساب الدعم المباشر</a></li>
+          <li><a href="/admin" target="_blank"><i class="fa-solid fa-user-shield text-accent"></i> لوحة تحكم التاجر (/admin)</a></li>
         </ul>
       </div>
 

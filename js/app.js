@@ -877,6 +877,7 @@
     const walletBlock = $('#modalWalletDetails');
     const instapayBlock = $('#modalInstapayDetails');
     const cardBlock = $('#modalCardDetails');
+    const stripeBlock = $('#modalStripeDetails');
 
     function selectMethod(method) {
       selectedPaymentMethod = method;
@@ -887,9 +888,10 @@
         if (radio) radio.checked = isCurrent;
       });
 
-      walletBlock.style.display = method === 'wallet' ? 'block' : 'none';
-      instapayBlock.style.display = method === 'instapay' ? 'block' : 'none';
-      cardBlock.style.display = method === 'card' ? 'block' : 'none';
+      if (walletBlock) walletBlock.style.display = method === 'wallet' ? 'block' : 'none';
+      if (instapayBlock) instapayBlock.style.display = method === 'instapay' ? 'block' : 'none';
+      if (cardBlock) cardBlock.style.display = method === 'card' ? 'block' : 'none';
+      if (stripeBlock) stripeBlock.style.display = method === 'stripe' ? 'block' : 'none';
     }
 
     options.forEach(opt => {
@@ -954,9 +956,9 @@
   }
 
   /* ═══════════════════════════════════════
-     تأكيد الطلب وتخزينه في سجل الطلبات وإرسال واتساب
+     تأكيد الطلب وحفظه في قاعدة البيانات وبوابات الدفع
      ═══════════════════════════════════════ */
-  function submitOrderFromModal() {
+  async function submitOrderFromModal() {
     let valid = true;
     const name = modalCustName.value.trim();
     const phone = modalCustPhone.value.trim();
@@ -998,90 +1000,137 @@
     const shipping = calculateShipping(subtotal);
     const grandTotal = Math.max(0, subtotal - discount + shipping);
 
-    // تفاصيل وسيلة الدفع بالرسالة
-    let paymentDesc = '';
-    if (selectedPaymentMethod === 'cod') {
-      paymentDesc = '💵 *الدفع عند الاستلام نقداً (كاش)* بعد المعاينة';
-    } else if (selectedPaymentMethod === 'wallet') {
-      const senderW = $('#modalSenderWallet').value.trim();
-      paymentDesc = '📱 *المحافظ الإلكترونية الذكية (فودافون/اتصالات/WE/أورنج)*';
-      paymentDesc += '\n   • محفظة المتجر المحول إليها: 01143950895';
-      if (senderW) paymentDesc += `\n   • رقم المحفظة المحول منها: ${senderW}`;
-    } else if (selectedPaymentMethod === 'instapay') {
-      const senderI = $('#modalSenderInstapay').value.trim();
-      paymentDesc = '🏦 *إنستاباي / تحويل بنكي فوري*';
-      paymentDesc += '\n   • معرف إنستاباي: market@instapay';
-      if (senderI) paymentDesc += `\n   • اسم المحول / المرجع: ${senderI}`;
-    } else if (selectedPaymentMethod === 'card') {
-      paymentDesc = '💳 *بطاقة بنكية (فيزا / ماستركارد / ميزة)*';
-      paymentDesc += '\n   • يرجى إرسال رابط بوابة الدفع الإلكتروني المباشر';
-    }
+    // تجهيز حالة الزر للتحميل
+    const originalBtnHtml = confirmCheckoutBtn.innerHTML;
+    confirmCheckoutBtn.disabled = true;
+    confirmCheckoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري تأكيد الطلب ومعالجة الدفع...';
 
     // توليد رقم الطلب
     const orderNumber = 'MKT-' + Math.floor(100000 + Math.random() * 900000);
     const orderDate = new Date().toLocaleDateString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
 
-    // تجميع الفاتورة الذكية للواتساب
-    let msg = `🛍️ *فاتورة طلب معتمد — متجر ${STORE_CONFIG.storeName}*\n`;
-    msg += `رقم الطلب: *#${orderNumber}*\n`;
-    msg += `التاريخ: ${orderDate}\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    // تجهيز كائن الطلب لإرساله للباك إند
+    const orderPayload = {
+      order_number: orderNumber,
+      customer_name: name,
+      customer_phone: phone,
+      customer_address: address,
+      city: 'القاهرة والجيزة',
+      items: cart.map(item => ({
+        id: item.id,
+        title: item.name,
+        price: item.price,
+        quantity: item.qty,
+        size: item.selectedSize || null,
+        color: item.selectedColor || null,
+        image: item.image || null
+      })),
+      subtotal: subtotal,
+      discount: discount,
+      shipping: shipping,
+      grand_total: grandTotal,
+      currency: 'EGP',
+      payment_method: selectedPaymentMethod,
+      payment_gateway: selectedPaymentMethod === 'stripe' ? 'stripe' : (selectedPaymentMethod === 'card' || selectedPaymentMethod === 'wallet' ? 'paymob' : 'cod'),
+      promo_code: activePromoCode ? activePromoCode.code : null,
+      notes: notes
+    };
 
-    msg += `📦 *المنتجات المطلوبة (${cart.length} صنف):*\n`;
-    cart.forEach((item, idx) => {
-      let opt = [];
-      if (item.selectedSize) opt.push(`المقاس: ${item.selectedSize}`);
-      if (item.selectedColor) opt.push(`اللون: ${item.selectedColor}`);
-      const optStr = opt.length ? ` (${opt.join(', ')})` : '';
+    try {
+      // 1. الدفع عبر Stripe
+      if (selectedPaymentMethod === 'stripe') {
+        const res = await fetch('/api/checkout/stripe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: orderPayload })
+        });
+        const data = await res.json();
+        if (data.success && data.redirectUrl) {
+          saveOrderToHistory({
+            orderId: orderNumber,
+            date: orderDate,
+            items: [...cart],
+            grandTotal: grandTotal,
+            paymentMethod: 'stripe',
+            status: 'pending'
+          });
+          window.location.href = data.redirectUrl;
+          return;
+        }
+      }
 
-      msg += `${idx + 1}. *${item.name}*${optStr}\n`;
-      msg += `   الكمية: ${item.qty} × ${item.price} ${STORE_CONFIG.currency} = ${item.qty * item.price} ${STORE_CONFIG.currency}\n`;
-    });
+      // 2. الدفع عبر Paymob (بطاقة أو محفظة)
+      if (selectedPaymentMethod === 'card' || selectedPaymentMethod === 'wallet') {
+        const res = await fetch('/api/checkout/paymob', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: orderPayload, paymentSubtype: selectedPaymentMethod })
+        });
+        const data = await res.json();
+        if (data.success && (data.redirectUrl || data.iframeUrl)) {
+          saveOrderToHistory({
+            orderId: orderNumber,
+            date: orderDate,
+            items: [...cart],
+            grandTotal: grandTotal,
+            paymentMethod: selectedPaymentMethod,
+            status: 'pending'
+          });
+          window.location.href = data.redirectUrl || data.iframeUrl;
+          return;
+        }
+      }
 
-    msg += `\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `المجموع الفرعي: ${subtotal} ${STORE_CONFIG.currency}\n`;
+      // 3. الدفع عند الاستلام (COD) أو إنستاباي
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload)
+      });
+      const data = await res.json();
 
-    if (discount > 0 && activePromoCode) {
-      msg += `🎟️ كود الخصم (${activePromoCode.code}): -${discount} ${STORE_CONFIG.currency}\n`;
+      saveOrderToHistory({
+        orderId: (data.order && data.order.order_number) || orderNumber,
+        date: orderDate,
+        items: [...cart],
+        grandTotal: grandTotal,
+        paymentMethod: selectedPaymentMethod,
+        status: 'confirmed'
+      });
+
+      // إعداد رسالة الواتساب كنسخة إضافية للعميل
+      let paymentDesc = selectedPaymentMethod === 'cod' ? '💵 الدفع عند الاستلام نقداً (كاش)' : '🏦 إنستاباي / تحويل بنكي فوري';
+      let msg = `🛍️ *فاتورة طلب معتمد — متجر ${STORE_CONFIG.storeName}*\n`;
+      msg += `رقم الطلب: *#${orderNumber}*\n`;
+      msg += `المبلغ المستحق: ${grandTotal} ${STORE_CONFIG.currency}\n`;
+      msg += `طريقة الدفع: ${paymentDesc}\n`;
+      msg += `العميل: ${name} (${phone})\nالعنوان: ${address}\n`;
+
+      const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+
+      // توجيه لصفحة تأكيد الطلب
+      window.location.href = `/order-success.html?order_id=${orderNumber}&gateway=${selectedPaymentMethod}`;
+    } catch (err) {
+      console.warn('⚠️ Server checkout failed, falling back to local order flow:', err.message);
+
+      // Fallback: حفظ الطلب محلياً وفتح الواتساب
+      saveOrderToHistory({
+        orderId: orderNumber,
+        date: orderDate,
+        items: [...cart],
+        grandTotal: grandTotal,
+        paymentMethod: selectedPaymentMethod,
+        status: 'confirmed'
+      });
+
+      let msg = `🛍️ *طلب جديد — متجر ${STORE_CONFIG.storeName}*\nرقم الطلب: *#${orderNumber}*\nالإجمالي: ${grandTotal} ${STORE_CONFIG.currency}\nالعميل: ${name} (${phone})`;
+      window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+      window.location.href = `/order-success.html?order_id=${orderNumber}&gateway=${selectedPaymentMethod}&mode=local`;
+    } finally {
+      confirmCheckoutBtn.disabled = false;
+      confirmCheckoutBtn.innerHTML = originalBtnHtml;
     }
-
-    msg += `🚚 مصاريف الشحن: ${shipping === 0 ? 'مجاني ⚡' : shipping + ' ' + STORE_CONFIG.currency}\n`;
-    msg += `💰 *الإجمالي النهائي المستحق: ${grandTotal} ${STORE_CONFIG.currency}*\n\n`;
-
-    msg += `💳 *طريقة الدفع المختارة:* \n${paymentDesc}\n\n`;
-
-    msg += `👤 *بيانات المستلم والتسليم:* \n`;
-    msg += `• الاسم: ${name}\n`;
-    msg += `• الهاتف: ${phone}\n`;
-    msg += `• العنوان بالتفصيل: ${address}\n`;
-    if (notes) msg += `• ملاحظات التوصيل: ${notes}\n`;
-
-    msg += `\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `تم الطلب عبر منصة ${STORE_CONFIG.storeName} الرسمية ✅`;
-
-    // حفظ الطلب في الـ Local Backend Simulator
-    saveOrderToHistory({
-      orderId: orderNumber,
-      date: orderDate,
-      items: [...cart],
-      grandTotal: grandTotal,
-      paymentMethod: selectedPaymentMethod,
-      status: 'confirmed'
-    });
-
-    // فتح واتساب
-    const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-    window.open(waUrl, '_blank', 'noopener,noreferrer');
-
-    showToast('تم تأكيد طلبك بنجاح وفتح محادثة واتساب الرسمية 🎉');
-
-    // تصفير السلة وإغلاق النافذة
-    cart = [];
-    activePromoCode = null;
-    saveCart();
-    updateCartUI();
-    closeCheckout();
-    renderOrdersList();
   }
 
   /* ═══════════════════════════════════════

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم تأكيد الطلب بنجاح | Market.com</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .success-page-wrap {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .success-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            max-width: 620px;
+            width: 100%;
+            padding: 40px 32px;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+        }
+        .success-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: #ecfdf5;
+            color: #10b981;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-card h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .success-card p {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+        .order-pill-box {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .order-pill-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        .order-pill-num {
+            font-size: 1.2rem;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', monospace;
+            color: #2563eb;
+        }
+        .success-steps {
+            text-align: right;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 28px;
+        }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+        .step-icon {
+            width: 28px;
+            height: 28px;
+            background: #e2e8f0;
+            color: #0f172a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-icon.done {
+            background: #10b981;
+            color: #fff;
+        }
+        .step-text h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .step-text p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0;
+        }
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-home {
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-home:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+        .btn-wa-support {
+            background: #25d366;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-wa-support:hover {
+            background: #22bf5b;
+            transform: translateY(-2px);
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-page-wrap">
+        <div class="success-card">
+            <div class="success-icon-wrap">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h1>تم استلام طلبك بنجاح!</h1>
+            <p id="successDesc">شكراً لتسوقك من Market.com. تم إرسال تفاصيل طلبك إلى نظام المتجر وسيتم تجهيزه للشحن فوراً.</p>
+
+            <div class="order-pill-box">
+                <span class="order-pill-label">رقم الطلب الخاص بك:</span>
+                <span class="order-pill-num" id="displayOrderNum">#ORD-2026-0001</span>
+            </div>
+
+            <div class="success-steps">
+                <div class="step-item">
+                    <div class="step-icon done"><i class="fa-solid fa-check"></i></div>
+                    <div class="step-text">
+                        <h4>تم تأكيد العملية بنجاح</h4>
+                        <p id="paymentStatusText">تم تسجيل وسيلة الدفع واعتماد الطلب في النظام.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">2</div>
+                    <div class="step-text">
+                        <h4>تجهيز وتغليف الطلب</h4>
+                        <p>فريقنا يجهز منتجاتك بعناية مع فحص الجودة خلال ساعات قليلة.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">3</div>
+                    <div class="step-text">
+                        <h4>التوصيل السريع (القاهرة والجيزة)</h4>
+                        <p>سيتواصل معك مندوب الشحن على هاتفك لتسليم الشحنة في الموعد المحدد.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-actions">
+                <a href="/" class="btn-home">
+                    <i class="fa-solid fa-store"></i> متابعة التسوق
+                </a>
+                <a href="https://wa.me/201143950895" target="_blank" class="btn-wa-support" id="btnWaOrder">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل مع الدعم عبر واتساب
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order_id') || urlParams.get('orderNumber');
+            const gateway = urlParams.get('gateway');
+            const displayOrderNum = document.getElementById('displayOrderNum');
+            const paymentStatusText = document.getElementById('paymentStatusText');
+            const btnWaOrder = document.getElementById('btnWaOrder');
+
+            if (orderId) {
+                displayOrderNum.textContent = '#' + orderId;
+                btnWaOrder.href = `https://wa.me/201143950895?text=${encodeURIComponent('مرحباً، أود الاستفسار عن حالة طلبي رقم #' + orderId)}`;
+            }
+
+            if (gateway === 'paymob') {
+                paymentStatusText.textContent = 'تم الدفع بنجاح عبر بوابة Paymob (بطاقة بنكية / محفظة إلكترونية).';
+            } else if (gateway === 'stripe') {
+                paymentStatusText.textContent = 'تم الدفع بنجاح عبر بوابة Stripe المعتمدة دولياً.';
+            }
+
+            // Clear local shopping cart on confirmed order
+            try {
+                localStorage.removeItem('market_cart_v2');
+                localStorage.removeItem('market_active_promo');
+            } catch (e) {}
+        })();
+    </script>
+</body>
+</html>

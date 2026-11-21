@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم التاجر | Market.com</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+    <!-- Background Glow -->
+    <div class="admin-bg-glow glow-1"></div>
+    <div class="admin-bg-glow glow-2"></div>
+
+    <!-- 1. LOGIN SCREEN -->
+    <div id="loginSection" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="brand-badge">
+                    <span class="brand-icon"><i class="fa-solid fa-store"></i></span>
+                    <span class="brand-name">Market<span>.com</span></span>
+                </div>
+                <h2>بوابة إدارة المتجر</h2>
+                <p>سجّل دخولك للوصول للطلبات والمبيعات وبوابات الدفع</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div id="loginAlert" class="alert-box alert-error" style="display: none;"></div>
+
+                <div class="form-group">
+                    <label for="adminUsername"><i class="fa-solid fa-user"></i> اسم المستخدم</label>
+                    <input type="text" id="adminUsername" placeholder="مثال: admin" required autofocus autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword"><i class="fa-solid fa-lock"></i> كلمة المرور</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="adminPassword" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="btn-toggle-pass" id="btnTogglePass" tabindex="-1">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLoginSubmit">
+                    <span>دخول للوحة التحكم</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+
+                <div class="login-hint">
+                    <i class="fa-solid fa-circle-info"></i> الحساب الافتراضي للتجربة: <code>admin</code> / كلمة المرور: <code>admin123</code>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. MAIN ADMIN DASHBOARD -->
+    <div id="dashboardSection" class="dashboard-wrapper" style="display: none;">
+        <!-- Top Navbar -->
+        <header class="admin-navbar">
+            <div class="nav-left">
+                <a href="/" class="admin-brand" title="الرجوع للمتجر">
+                    <span class="brand-icon"><i class="fa-solid fa-store"></i></span>
+                    <span class="brand-title">Market<span>.com</span></span>
+                    <span class="admin-tag">لوحة التاجر</span>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <button id="btnAutoRefresh" class="nav-action-btn active" title="التحديث التلقائي كل 15 ثانية">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>تحديث حي</span>
+                </button>
+                <button id="btnManualRefresh" class="nav-action-btn" title="تحديث البيانات">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <a href="/" target="_blank" class="nav-action-btn view-store-btn" title="معاينة المتجر كعميل">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <span>عرض المتجر</span>
+                </a>
+                <div class="admin-user-pill">
+                    <div class="user-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <span id="displayAdminName">المسؤول</span>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="تسجيل الخروج">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>خروج</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Welcome Header -->
+            <div class="dashboard-welcome">
+                <div>
+                    <h1>مرحباً، لوحة إدارة الطلبات والمبيعات</h1>
+                    <p>متابعة فورية للطلبات الواردة، عمليات الدفع عبر Paymob و Stripe، والإشعارات</p>
+                </div>
+                <div class="gateway-status-strip">
+                    <span class="gateway-pill" id="statusSupabase"><i class="fa-solid fa-database"></i> Supabase</span>
+                    <span class="gateway-pill" id="statusPaymob"><i class="fa-solid fa-credit-card"></i> Paymob</span>
+                    <span class="gateway-pill" id="statusStripe"><i class="fa-brands fa-stripe"></i> Stripe</span>
+                    <span class="gateway-pill" id="statusTelegram"><i class="fa-brands fa-telegram"></i> Telegram</span>
+                </div>
+            </div>
+
+            <!-- KPI Stats Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card revenue-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">إجمالي المبيعات المدفوعة</span>
+                        <h2 class="kpi-value" id="kpiRevenue">0.00 ج.م</h2>
+                        <span class="kpi-hint"><i class="fa-solid fa-circle-check"></i> معاملات مكتملة وناجحة</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card paid-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">الطلبات المدفوعة</span>
+                        <h2 class="kpi-value" id="kpiPaidOrders">0</h2>
+                        <span class="kpi-hint">جاهزة للتجهيز والشحن</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card pending-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">طلبات قيد الانتظار</span>
+                        <h2 class="kpi-value" id="kpiPendingOrders">0</h2>
+                        <span class="kpi-hint">بانتظار تأكيد الدفع أو الاستلام</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card avg-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">متوسط قيمة الطلب</span>
+                        <h2 class="kpi-value" id="kpiAvgValue">0.00 ج.م</h2>
+                        <span class="kpi-hint">AOV للمبيعات الناجحة</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Actions Toolbar -->
+            <div class="table-toolbar">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-status="all">الكل (<span id="countAll">0</span>)</button>
+                    <button class="filter-tab" data-status="paid"><i class="fa-solid fa-check"></i> المدفوعة (<span id="countPaid">0</span>)</button>
+                    <button class="filter-tab" data-status="pending"><i class="fa-solid fa-clock"></i> قيد الانتظار (<span id="countPending">0</span>)</button>
+                    <button class="filter-tab" data-status="failed"><i class="fa-solid fa-xmark"></i> لم تكتمل (<span id="countFailed">0</span>)</button>
+                </div>
+
+                <div class="search-filter-wrap">
+                    <div class="search-input-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="orderSearchInput" placeholder="بحث برقم الطلب، اسم العميل، أو الهاتف...">
+                    </div>
+                    <select id="gatewayFilter" class="filter-select">
+                        <option value="">جميع بوابات الدفع</option>
+                        <option value="paymob">Paymob (بطاقة / محفظة)</option>
+                        <option value="stripe">Stripe (دولي)</option>
+                        <option value="cod">الدفع عند الاستلام (COD)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Orders Table Card -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3><i class="fa-solid fa-boxes-stacked"></i> قائمة الطلبات المباشرة</h3>
+                    <div class="table-actions">
+                        <button id="btnExportCsv" class="btn-secondary-action">
+                            <i class="fa-solid fa-file-csv"></i> تصدير CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل والاتصال</th>
+                                <th>العنوان والمدينة</th>
+                                <th>المنتجات</th>
+                                <th>الإجمالي</th>
+                                <th>بوابة الدفع</th>
+                                <th>حالة الدفع</th>
+                                <th>التاريخ والوقت</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="9" class="loading-state">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الطلبات...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyOrdersState" class="empty-state" style="display: none;">
+                    <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <h3>لا توجد طلبات تطابق هذا التصنيف</h3>
+                    <p>ستظهر الطلبات الجديدة هنا فور قيام العملاء بالشراء</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 3. ORDER DETAIL MODAL -->
+    <div id="orderDetailModal" class="admin-modal" style="display: none;">
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-subtitle">تفاصيل الطلب الكاملة</span>
+                    <h3 id="modalOrderTitle">#ORD-2026-XXXX</h3>
+                </div>
+                <button type="button" class="btn-close-modal" id="btnCloseModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" id="modalOrderContent">
+                <!-- Dynamically Populated -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-print" id="btnPrintInvoice">
+                    <i class="fa-solid fa-print"></i> طباعة الفاتورة
+                </button>
+                <div class="status-change-actions">
+                    <span class="action-label">تحديث الحالة:</span>
+                    <button class="btn-action-status btn-status-paid" data-status="paid">
+                        <i class="fa-solid fa-check"></i> تأكيد كـ مدفوع
+                    </button>
+                    <button class="btn-action-status btn-status-pending" data-status="pending">
+                        <i class="fa-solid fa-clock"></i> قيد الانتظار
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="adminToastContainer" class="toast-container"></div>
+
+    <script src="/admin/admin.js"></script>
+</body>
+</html>
