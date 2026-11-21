@@ -1,7 +1,7 @@
 /* ======================================================
    market.com — Luxury Modern eCommerce Stylesheet
    الهوية: أخضر زمردي فاخر + ذهبي دافئ + رمادي دافئ
-   مستوحاة من H&M، SHEIN، Breadfast، و Noon Minutes
+   تصميم متطور بمعايير عالمية لتجربة تسوق فريدة
    ====================================================== */
 
 /* ─── متغيرات التصميم والألوان ─── */
@@ -137,7 +137,7 @@ body.theme-offers {
 }
 
 /* ═══════════════════════════════════════
-   شريط الإعلانات وتوصيل الدقائق (Noon / Breadfast)
+   شريط الإعلانات وتوصيل الدقائق الفوري
    ═══════════════════════════════════════ */
 .announcement-bar {
   background: linear-gradient(90deg, #094733 0%, var(--clr-primary) 50%, #094733 100%);
@@ -870,7 +870,7 @@ body.theme-offers {
 }
 
 /* ═══════════════════════════════════════
-   بطاقات المنتجات المتطورة (H&M / Breadfast Style)
+   بطاقات المنتجات المتطورة
    ═══════════════════════════════════════ */
 .products-section {
   margin-bottom: 48px;
@@ -919,7 +919,7 @@ body.theme-offers {
   transform: scale(1.06);
 }
 
-/* زر المعاينة السريعة العائم فوق الصورة (SHEIN Style) */
+/* زر المعاينة السريعة العائم فوق الصورة */
 .product-quickview-btn {
   position: absolute;
   bottom: 12px;
@@ -981,7 +981,7 @@ body.theme-offers {
   z-index: 2;
 }
 
-/* شارات الطزاجة وسرعة التوصيل للأغذية (Breadfast) */
+/* شارات الطزاجة وسرعة التوصيل للأغذية */
 .product-eta-badge {
   position: absolute;
   bottom: 10px;
@@ -1923,7 +1923,7 @@ body.theme-offers {
 }
 
 /* ═══════════════════════════════════════
-   نافذة المعاينة السريعة (Quick View Modal) (SHEIN / H&M)
+   نافذة المعاينة السريعة (Quick View Modal)
    ═══════════════════════════════════════ */
 .quickview-modal-backdrop {
   position: fixed;
@@ -2082,7 +2082,7 @@ body.theme-offers {
   margin-bottom: 18px;
 }
 
-/* محدد المقاسات والألوان (SHEIN Style) */
+/* محدد المقاسات والألوان */
 .qv-option-group {
   margin-bottom: 16px;
 }

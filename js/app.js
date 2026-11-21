@@ -4,8 +4,8 @@
  * ======================================================
  *  • Dedicated Checkout Modal (Shopify Plus Style)
  *  • Interactive Promo Code / Coupon Engine
- *  • Quick View Modal with Sizes & Colors (SHEIN / H&M Style)
- *  • Freshness Badges & ETA Ticker (Noon Minutes / Breadfast)
+ *  • Quick View Modal with Sizes & Colors
+ *  • Freshness Badges & Fast Delivery Ticker
  *  • Order Tracking & History (Local Backend Simulator)
  *  • Strict XSS Sanitization
  * ======================================================
@@ -28,14 +28,14 @@
   const CATEGORIES_DATA = {
     clothes: {
       name: 'الملابس والأزياء',
-      tag: 'أناقة وجودة عالية (H&M / SHEIN)',
+      tag: 'أناقة وجودة عالية',
       desc: 'أحدث صيحات الموضة والأزياء الرجالية والنسائية وملابس الأطفال بخامات قطنية ممتازة وتصميمات تناسب كل الأوقات.',
       themeClass: 'theme-clothes',
       bannerClass: 'banner-clothes'
     },
     food: {
       name: 'المنتجات الغذائية والسوبرماركت',
-      tag: 'طازج وسريع (Breadfast / Noon Minutes)',
+      tag: 'طازج وسريع لباب البيت',
       desc: 'كل ما تحتاجه مائدتك من السلع التموينية الأساسية، الزيوت النقية، المشروبات الطبيعية، والمعلبات وكراتين التوفير.',
       themeClass: 'theme-food',
       bannerClass: 'banner-food'
@@ -281,13 +281,13 @@
       badgeHTML = `<span class="product-badge">خصم ${discountPercent}%</span>`;
     }
 
-    // شارات الأغذية (Breadfast / Noon Minutes)
+    // شارات الأغذية والسوبرماركت
     let etaBadgeHTML = '';
     if (product.eta) {
       etaBadgeHTML = `<span class="product-eta-badge">${escapeHTML(product.eta)}</span>`;
     }
 
-    // معاينة المقاسات للملابس (H&M / SHEIN)
+    // معاينة المقاسات للملابس
     let sizesPreviewHTML = '';
     if (product.sizes && product.sizes.length > 0) {
       const previewSizes = product.sizes.slice(0, 4);
@@ -1183,7 +1183,7 @@
   }
 
   /* ═══════════════════════════════════════
-     نافذة المعاينة السريعة (Quick View Modal) (H&M / SHEIN)
+     نافذة المعاينة السريعة (Quick View Modal)
      ═══════════════════════════════════════ */
   function openQuickView(productId) {
     const product = PRODUCTS.find(p => p.id === productId);
