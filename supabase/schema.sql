@@ -99,10 +99,5 @@ CREATE POLICY "Admin table restricted"
     USING (true)
     WITH CHECK (true);
 
--- ====================================================================
--- Initial Seed (Optional): Default Admin Account
--- Default password: admin123 (hashed with bcrypt: $2a$10$wB5kM7r7p3XfG6yq5P5pEuW7mG7vA4jVqCqG7j0lM4bS6a1r2Z0a.)
--- ====================================================================
-INSERT INTO public.admin_users (username, password_hash, full_name, role)
-VALUES ('admin', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'مدير المتجر', 'admin')
-ON CONFLICT (username) DO NOTHING;
+-- No default administrator is seeded. Configure the required admin
+-- environment variables on the backend host before starting the server.

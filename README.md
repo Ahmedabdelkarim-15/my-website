@@ -32,8 +32,6 @@
 ### 3. 👑 لوحة تحكم التاجر المتقدمة (`/admin`):
 - وصول مباشر عبر الرابط: `http://localhost:8080/admin` (أو مسار المتجر الخاص بك).
 - حماية أمنية بتسجيل دخول مشفر عبر رموز JWT وجلسات آمنة:
-  - **اسم المستخدم الافتراضي:** `admin`
-  - **كلمة المرور الافتراضية:** `admin123`
 - بطاقات المؤشرات اللحظية (KPIs):
   - 💰 إجمالي المبيعات المدفوعة بالجنيه المصري.
   - 📦 عدد الطلبات المدفوعة الجاهزة للشحن.
@@ -101,9 +99,9 @@ npm start
 انسخ ملف `.env.example` إلى `.env` وضع المفاتيح الخاصة بك:
 ```ini
 PORT=8080
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin123
-ADMIN_JWT_SECRET=your_jwt_secret
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
+ADMIN_JWT_SECRET=
 
 # Supabase
 SUPABASE_URL=https://your-project.supabase.co
@@ -141,3 +139,20 @@ TELEGRAM_CHAT_ID=your_telegram_id
 ---
 
 **market.com — تجربة تسوق وتجارة إلكترونية ذكية متكاملة 🇪🇬**
+
+
+## Security configuration and deployment
+
+The backend requires these environment variables. There are no default admin credentials:
+
+- `ADMIN_USERNAME`: merchant administrator login name.
+- `ADMIN_PASSWORD`: unique administrator password, at least 16 characters.
+- `ADMIN_JWT_SECRET`: independently generated random signing secret, at least 32 characters.
+
+Set actual values in the backend host's environment/secrets settings, not in Git or browser code. For local development only, use an untracked `.env` file. Startup fails with the missing variable name if a required value is absent. Do not reuse example values. Restart/redeploy after configuration changes.
+
+Only `public/` is served by Express. Browser files now live under `public/`; server code, `services/`, `supabase/`, and environment files must stay outside it. Relative browser URLs are unchanged. Start the backend from the repository root with `npm start` after installing dependencies. The old root-level file tree above is historical; the public assets have moved.
+
+Cloudflare Pages alone can serve the `public/` frontend but cannot run this Express backend. Set its output directory to `public` if deploying the frontend there. The API needs a Node-capable backend host or a separate Cloudflare Functions/Workers adaptation. Do not claim that static deployment enables payments or order storage.
+
+If the old SQL seed was already run, remove or disable the demo administrator in the database separately before launch. Removing the seed from this file does not remove existing accounts. Changing the JWT signing secret invalidates existing admin sessions. This patch does not configure or rotate third-party secrets.

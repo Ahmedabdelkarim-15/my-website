@@ -10,6 +10,25 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+// Security configuration must be set before the server starts.
+function requireEnvironment(name) {
+    const value = process.env[name];
+    if (!value || !value.trim()) {
+        throw new Error(`Missing required environment variable: ${name}`);
+    }
+    return value;
+}
+
+const ADMIN_USERNAME = requireEnvironment('ADMIN_USERNAME');
+const ADMIN_PASSWORD = requireEnvironment('ADMIN_PASSWORD');
+const JWT_SECRET = requireEnvironment('ADMIN_JWT_SECRET');
+if (ADMIN_PASSWORD.length < 16) {
+    throw new Error('ADMIN_PASSWORD must contain at least 16 characters');
+}
+if (JWT_SECRET.length < 32) {
+    throw new Error('ADMIN_JWT_SECRET must contain at least 32 characters');
+}
+
 const supabaseService = require('./services/supabase');
 const paymobService = require('./services/paymob');
 const stripeService = require('./services/stripe');
@@ -17,7 +36,6 @@ const telegramService = require('./services/telegram');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'market_secret_jwt_key_2026';
 
 // 1. Enable CORS for all origins
 app.use(cors());
@@ -74,11 +92,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 4. Serve static frontend assets
-app.use(express.static(path.join(__dirname)));
+const PUBLIC_DIR = path.join(__dirname, 'public');
+app.use(express.static(PUBLIC_DIR, { dotfiles: 'deny' }));
 
 // Admin route alias
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin', 'index.html'));
+    res.sendFile(path.join(PUBLIC_DIR, 'admin', 'index.html'));
 });
 
 // ====================================================================
@@ -271,8 +290,8 @@ app.post('/api/webhooks/paymob', async (req, res) => {
 app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const defaultUser = process.env.ADMIN_USERNAME || 'admin';
-        const defaultPass = process.env.ADMIN_PASSWORD || 'admin123';
+        const defaultUser = ADMIN_USERNAME;
+        const defaultPass = ADMIN_PASSWORD;
 
         // Check credentials against env or Supabase admin_users
         let authenticated = false;
@@ -355,7 +374,7 @@ app.patch('/api/admin/orders/:orderNumber', requireAdmin, async (req, res) => {
 
 // Fallback for SPA routing to index.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
 // ====================================================================
