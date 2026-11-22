@@ -1,0 +1,202 @@
+/* ======================================================
+   market.com — LTR overrides (English layout)
+   تُفعَّل تلقائياً عندما يكون <html dir="ltr">
+   ====================================================== */
+
+html[dir="ltr"] body {
+  direction: ltr;
+  text-align: left;
+}
+
+/* خانة البحث: الأيقونة يمين في RTL → يسار في LTR */
+html[dir="ltr"] .search-box .search-icon {
+  right: auto;
+  left: 18px;
+}
+html[dir="ltr"] .search-box input {
+  padding: 12px 42px 12px 46px;
+}
+html[dir="ltr"] .clear-search-btn {
+  left: auto;
+  right: 14px;
+}
+
+/* زر العروض في شريط التنقل */
+html[dir="ltr"] .nav-offers-btn {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* شارات المنتج */
+html[dir="ltr"] .product-badge {
+  right: auto;
+  left: 12px;
+}
+html[dir="ltr"] .product-category-tag {
+  left: auto;
+  right: 56px;
+}
+html[dir="ltr"] .product-eta-badge {
+  right: auto;
+  left: 10px;
+}
+html[dir="ltr"] .product-fav-btn {
+  left: auto;
+  right: 12px;
+}
+html[dir="ltr"] .badge-count {
+  left: auto;
+  right: 6px;
+}
+
+/* أيقونة كود الخصم داخل الخانة */
+html[dir="ltr"] .promo-input-icon {
+  right: auto;
+  left: 12px;
+}
+html[dir="ltr"] .promo-input-row input {
+  padding-right: 12px;
+  padding-left: 38px;
+}
+
+/* الأدراج الجانبية: تفتح من اليسار في RTL → من اليمين في LTR */
+html[dir="ltr"] .side-drawer {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+}
+html[dir="ltr"] .side-drawer.open {
+  transform: translateX(0);
+}
+
+/* أزرار الحذف والمؤشرات */
+html[dir="ltr"] .remove-btn {
+  margin-right: 0;
+  margin-left: auto;
+}
+html[dir="ltr"] .check-indicator {
+  margin-right: 0;
+  margin-left: auto;
+}
+html[dir="ltr"] .stock-ticker {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* عمود صفحة الدفع */
+html[dir="ltr"] .checkout-left-col {
+  border-left: none;
+  border-right: 1px solid var(--clr-border);
+}
+@media (max-width: 992px) {
+  html[dir="ltr"] .checkout-left-col {
+    border-right: none;
+    border-bottom: 1px solid var(--clr-border);
+  }
+}
+
+/* محاكي البطاقة البنكية */
+html[dir="ltr"] .interactive-card-preview::before {
+  right: auto;
+  left: -40px;
+}
+html[dir="ltr"] .card-brand-sim {
+  left: auto;
+  right: 20px;
+}
+html[dir="ltr"] .card-number-sim {
+  text-align: left;
+}
+
+/* نافذة المعاينة السريعة */
+html[dir="ltr"] .quickview-close-btn {
+  left: auto;
+  right: 16px;
+}
+
+/* الأزرار العائمة */
+html[dir="ltr"] .floating-actions {
+  left: auto;
+  right: 24px;
+  align-items: flex-end;
+}
+@media (max-width: 768px) {
+  html[dir="ltr"] .floating-actions {
+    left: auto;
+    right: 16px;
+  }
+}
+
+/* قلب اتجاه الأسهم الدلالية في LTR */
+html[dir="ltr"] .fa-arrow-left,
+html[dir="ltr"] .fa-angle-left,
+html[dir="ltr"] .fa-arrow-right {
+  transform: scaleX(-1);
+}
+
+/* زر تبديل اللغة */
+.lang-toggle-btn {
+  font-weight: 800;
+}
+.lang-toggle-btn .action-btn-label {
+  letter-spacing: 0.2px;
+}
+
+/* زر اللغة العائم (للصفحات بدون هيدر مثل صفحة نجاح الطلب) */
+.lang-toggle-floating {
+  position: fixed;
+  top: 16px;
+  inset-inline-end: 16px;
+  z-index: 3000;
+  background: var(--clr-white, #fff);
+  border: 1px solid var(--clr-border, #e5e7eb);
+  border-radius: 9999px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--clr-text-main, #111827);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+.lang-toggle-floating:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* بطاقات الثقة في الهيرو */
+html[dir="ltr"] .trust-item {
+  text-align: left;
+}
+
+/* ── لوحة تحكم التاجر (admin) ── */
+html[dir="ltr"] .btn-toggle-pass {
+    left: auto;
+    right: 14px;
+}
+
+html[dir="ltr"] .search-input-box i {
+    right: auto;
+    left: 14px;
+}
+
+html[dir="ltr"] .search-input-box input {
+    padding: 10px 16px 10px 40px;
+}
+
+html[dir="ltr"] .orders-table {
+    text-align: left;
+}
+
+html[dir="ltr"] .toast-container {
+    left: auto;
+    right: 24px;
+}
+
+/* في لوحة التاجر: زر اللغة العائم أسفل الشاشة حتى لا يغطي شريط التحكم العلوي على الموبايل */
+body.admin-page .lang-toggle-floating {
+  top: auto;
+  bottom: 16px;
+}

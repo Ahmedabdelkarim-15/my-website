@@ -37,8 +37,19 @@ const telegramService = require('./services/telegram');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// 1. Enable CORS for all origins
-app.use(cors());
+// 1. CORS – allow only same-origin and explicit trusted origins
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (mobile apps, curl, same-origin)
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 
 // 2. Stripe Webhook needs RAW body for HMAC signature verification
 app.post(
@@ -87,18 +98,44 @@ app.post(
     }
 );
 
-// 3. Regular body parsers for all other endpoints
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 3. Regular body parsers with size limits to prevent DoS
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
-// 4. Serve static frontend assets
+// 4. Admin route aliases (served directly before static middleware)
 const PUBLIC_DIR = path.join(__dirname, 'public');
-app.use(express.static(PUBLIC_DIR, { dotfiles: 'deny' }));
-
-// Admin route alias
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin/'], (req, res) => {
     res.sendFile(path.join(PUBLIC_DIR, 'admin', 'index.html'));
 });
+
+// 5. Serve static frontend assets
+app.use(express.static(PUBLIC_DIR, { dotfiles: 'deny' }));
+
+// Simple in-memory rate limiter for sensitive endpoints
+const rateLimitStore = new Map();
+function rateLimit(windowMs, maxHits) {
+    return (req, res, next) => {
+        const key = req.ip + ':' + req.path;
+        const now = Date.now();
+        const entry = rateLimitStore.get(key);
+        if (entry && now - entry.start < windowMs) {
+            if (entry.hits >= maxHits) {
+                return res.status(429).json({ success: false, message: 'تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً' });
+            }
+            entry.hits++;
+        } else {
+            rateLimitStore.set(key, { start: now, hits: 1 });
+        }
+        next();
+    };
+}
+// Cleanup expired entries every 5 minutes
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of rateLimitStore) {
+        if (now - entry.start > 900000) rateLimitStore.delete(key);
+    }
+}, 300000);
 
 // ====================================================================
 // Authentication Middleware for Admin
@@ -111,7 +148,7 @@ function requireAdmin(req, res, next) {
 
     const token = authHeader.split(' ')[1];
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
         req.admin = decoded;
         next();
     } catch (err) {
@@ -161,7 +198,7 @@ app.post('/api/orders', async (req, res) => {
         });
     } catch (err) {
         console.error('❌ [API /orders] Error:', err);
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء تسجيل الطلب، يرجى المحاولة مرة أخرى' });
     }
 });
 
@@ -180,7 +217,7 @@ app.get('/api/orders/:orderNumber', async (req, res) => {
 // ====================================================================
 // Checkout APIs: Paymob & Stripe Initiators
 // ====================================================================
-app.post('/api/checkout/paymob', async (req, res) => {
+app.post('/api/checkout/paymob', rateLimit(60000, 15), async (req, res) => {
     try {
         const { order, paymentSubtype } = req.body;
         if (!order) {
@@ -203,11 +240,11 @@ app.post('/api/checkout/paymob', async (req, res) => {
         });
     } catch (err) {
         console.error('❌ [API /checkout/paymob] Error:', err);
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء معالجة عملية الدفع' });
     }
 });
 
-app.post('/api/checkout/stripe', async (req, res) => {
+app.post('/api/checkout/stripe', rateLimit(60000, 15), async (req, res) => {
     try {
         const { order } = req.body;
         if (!order) {
@@ -232,7 +269,7 @@ app.post('/api/checkout/stripe', async (req, res) => {
         });
     } catch (err) {
         console.error('❌ [API /checkout/stripe] Error:', err);
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء معالجة عملية الدفع' });
     }
 });
 
@@ -287,7 +324,7 @@ app.post('/api/webhooks/paymob', async (req, res) => {
 // ====================================================================
 // Admin APIs: Login, Orders, Stats
 // ====================================================================
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', rateLimit(900000, 10), async (req, res) => {
     try {
         const { username, password } = req.body;
         const defaultUser = ADMIN_USERNAME;
@@ -319,7 +356,7 @@ app.post('/api/admin/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'اسم المستخدم أو كلمة المرور غير صحيحة' });
         }
 
-        const token = jwt.sign(adminData, JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign(adminData, JWT_SECRET, { algorithm: 'HS256', expiresIn: '7d' });
         res.json({
             success: true,
             token,
@@ -328,7 +365,7 @@ app.post('/api/admin/login', async (req, res) => {
         });
     } catch (err) {
         console.error('❌ [API /admin/login] Error:', err);
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء تسجيل الدخول' });
     }
 });
 
@@ -370,6 +407,11 @@ app.patch('/api/admin/orders/:orderNumber', requireAdmin, async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
+});
+
+// 404 handler for unmatched API routes
+app.all('/api/*', (req, res) => {
+    res.status(404).json({ success: false, message: 'Endpoint not found' });
 });
 
 // Fallback for SPA routing to index.html

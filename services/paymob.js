@@ -148,8 +148,8 @@ async function createCheckoutSession(order, paymentMethod = 'card') {
 function verifyHmac(data, receivedHmac) {
     const hmacSecret = process.env.PAYMOB_HMAC_SECRET;
     if (!hmacSecret) {
-        console.warn('⚠️ [Paymob] PAYMOB_HMAC_SECRET not set, cannot verify HMAC.');
-        return true; // Bypass only in development if secret not provided
+        console.error('❌ [Paymob] PAYMOB_HMAC_SECRET not set in environment. Rejecting webhook signature verification.');
+        return false;
     }
 
     const obj = data.obj || data;

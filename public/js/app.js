@@ -13,6 +13,10 @@
 
 (function () {
   'use strict';
+    // عنوان الواجهة الخلفية: فارغ = نفس النطاق. في تطبيق الموبايل يُضبط عبر window.MARKET_API_BASE بعد نشر السيرفر.
+    const API_BASE = window.MARKET_API_BASE || '';
+
+  const t = window.I18N ? window.I18N.t : (s) => s;
 
   /* ─── إعدادات وثوابت المتجر ─── */
   const STORE_CONFIG = {
@@ -269,22 +273,22 @@
 
     const isFav = favorites.includes(product.id);
     const categoryName =
-      product.category === 'clothes' ? 'ملابس وأزياء' :
-      product.category === 'food' ? 'سوبرماركت' : 'أدوات منزلية';
+      product.category === 'clothes' ? t('ملابس وأزياء') :
+      product.category === 'food' ? t('سوبرماركت') : t('أدوات منزلية');
 
     // شارة الخصم أو العرض
     let badgeHTML = '';
     if (product.badge) {
-      badgeHTML = `<span class="product-badge">${escapeHTML(product.badge)}</span>`;
+      badgeHTML = `<span class="product-badge">${escapeHTML(t(product.badge))}</span>`;
     } else if (product.oldPrice && product.oldPrice > product.price) {
       const discountPercent = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
-      badgeHTML = `<span class="product-badge">خصم ${discountPercent}%</span>`;
+      badgeHTML = `<span class="product-badge">${I18N.msg.discountPct(discountPercent)}</span>`;
     }
 
     // شارات الأغذية والسوبرماركت
     let etaBadgeHTML = '';
     if (product.eta) {
-      etaBadgeHTML = `<span class="product-eta-badge">${escapeHTML(product.eta)}</span>`;
+      etaBadgeHTML = `<span class="product-eta-badge">${escapeHTML(t(product.eta))}</span>`;
     }
 
     // معاينة المقاسات للملابس
@@ -293,7 +297,7 @@
       const previewSizes = product.sizes.slice(0, 4);
       sizesPreviewHTML = `
         <div class="card-sizes-preview">
-          ${previewSizes.map(s => `<span class="size-mini-chip">${escapeHTML(s)}</span>`).join('')}
+          ${previewSizes.map(s => `<span class="size-mini-chip">${escapeHTML(t(s))}</span>`).join('')}
           ${product.sizes.length > 4 ? '<span class="size-mini-chip">+</span>' : ''}
         </div>
       `;
@@ -308,11 +312,11 @@
         ${badgeHTML}
         ${etaBadgeHTML}
         <span class="product-category-tag">${categoryName}</span>
-        <button class="product-fav-btn ${isFav ? 'active' : ''}" data-id="${product.id}" title="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" aria-label="المفضلة">
+        <button class="product-fav-btn ${isFav ? 'active' : ''}" data-id="${product.id}" title="${isFav ? t('إزالة من المفضلة') : t('إضافة للمفضلة')}" aria-label="المفضلة">
           <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
         </button>
         <button class="product-quickview-btn" data-id="${product.id}">
-          <i class="fa-solid fa-eye"></i> معاينة سريعة
+          <i class="fa-solid fa-eye"></i> ${t('معاينة سريعة')}
         </button>
       </div>
       <div class="product-info">
@@ -326,24 +330,24 @@
         ${sizesPreviewHTML}
         <div class="product-footer">
           <div class="price-group">
-            <span class="price">${product.price} ${STORE_CONFIG.currency}</span>
-            ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ${STORE_CONFIG.currency}</span>` : ''}
+            <span class="price">${product.price} ${I18N.cur()}</span>
+            ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ${I18N.cur()}</span>` : ''}
           </div>
           <button class="add-to-cart-btn" data-id="${product.id}">
             <i class="fa-solid fa-cart-plus"></i>
-            <span>أضف للسلة</span>
+            <span>${t('أضف للسلة')}</span>
           </button>
         </div>
       </div>
     `;
 
     // ملء النصوص لمنع أي ثغرات XSS
-    card.querySelector('.product-name').textContent = product.name;
-    card.querySelector('.product-desc').textContent = product.description;
+    card.querySelector('.product-name').textContent = t(product.name);
+    card.querySelector('.product-desc').textContent = t(product.description);
 
     // الصورة البديلة الآمنة
     const img = card.querySelector('.product-img-wrap img');
-    img.alt = product.name;
+    img.alt = t(product.name);
     img.onerror = function () {
       this.src = 'data:image/svg+xml,' + encodeURIComponent(
         '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" fill="%23f3f4f6"><rect width="400" height="400"/><text x="200" y="210" text-anchor="middle" fill="%239ca3af" font-size="28" font-family="sans-serif">market.com</text></svg>'
@@ -355,10 +359,10 @@
     addBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       addToCart(product);
-      addBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>تمت الإضافة</span>';
+      addBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>' + t('تمت الإضافة') + '</span>';
       addBtn.classList.add('added');
       setTimeout(() => {
-        addBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> <span>أضف للسلة</span>';
+        addBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> <span>' + t('أضف للسلة') + '</span>';
         addBtn.classList.remove('added');
       }, 1400);
     });
@@ -401,8 +405,8 @@
       grid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-icon-wrap"><i class="fa-solid fa-magnifying-glass"></i></div>
-          <h4>لا توجد منتجات مطابقة حالياً</h4>
-          <p>جرب تغيير خيارات البحث أو تصفح الأقسام الأخرى للاطلاع على أحدث العروض</p>
+          <h4>${t('لا توجد منتجات مطابقة حالياً')}</h4>
+          <p>${t('جرب تغيير خيارات البحث أو تصفح الأقسام الأخرى للاطلاع على أحدث العروض')}</p>
         </div>
       `;
       return;
@@ -452,9 +456,9 @@
       applyTheme(info.themeClass);
       categoryBanner.className = `category-banner ${info.bannerClass}`;
       categoryBanner.style.display = '';
-      catBannerTag.textContent = info.tag;
-      catBannerTitle.textContent = info.name;
-      catBannerDesc.textContent = info.desc;
+      catBannerTag.textContent = t(info.tag);
+      catBannerTitle.textContent = t(info.name);
+      catBannerDesc.textContent = t(info.desc);
     }
 
     heroSection.style.display = 'none';
@@ -464,7 +468,7 @@
     searchSection.style.display = 'none';
     filteredSection.style.display = '';
 
-    filteredTitle.textContent = info ? info.name : catKey;
+    filteredTitle.textContent = info ? t(info.name) : catKey;
 
     buildSubFilters(catKey);
     filterAndRender();
@@ -481,7 +485,7 @@
     subs.forEach(sub => {
       const btn = document.createElement('button');
       btn.className = `filter-chip ${sub.key === 'all' ? 'active' : ''}`;
-      btn.textContent = sub.label;
+      btn.textContent = t(sub.label);
       btn.setAttribute('data-sub', sub.key);
       btn.addEventListener('click', function () {
         currentSubcategory = sub.key;
@@ -523,7 +527,7 @@
       items.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
     }
 
-    filteredCount.textContent = `${items.length} منتج`;
+    filteredCount.textContent = I18N.msg.items(items.length);
     renderProducts(filteredGrid, items);
   }
 
@@ -543,12 +547,11 @@
     const lower = query.toLowerCase();
 
     const results = PRODUCTS.filter(p => {
-      const catText = p.category === 'clothes' ? 'ملابس أزياء جاكيت فستان تيشيرت بنطلون' :
-                      p.category === 'food' ? 'أغذية منتجات غذائية أرز زيت عسل تونة عصير تموين بقالة' :
-                      'أدوات منزلية مطبخ خلاط حلل سكاكين شمعة منظم مكنسة ديكور';
-      return p.name.toLowerCase().includes(lower) ||
-             p.description.toLowerCase().includes(lower) ||
-             catText.toLowerCase().includes(lower);
+      const catText = p.category === 'clothes' ? 'ملابس أزياء جاكيت فستان تيشيرت بنطلون clothes fashion jacket dress tshirt pants jeans' :
+                      p.category === 'food' ? 'أغذية منتجات غذائية أرز زيت عسل تونة عصير تموين بقالة food grocery rice oil honey tuna juice pantry' :
+                      'أدوات منزلية مطبخ خلاط حلل سكاكين شمعة منظم مكنسة ديكور homeware kitchen blender pots knives candle organizer vacuum decor';
+      const haystack = [p.name, p.description, t(p.name), t(p.description), catText].join(' ').toLowerCase();
+      return haystack.includes(lower);
     });
 
     heroSection.style.display = 'none';
@@ -559,7 +562,7 @@
     filteredSection.style.display = 'none';
     searchSection.style.display = '';
 
-    searchTitle.textContent = `نتائج البحث عن "${query}" (${results.length} منتج)`;
+    searchTitle.textContent = I18N.msg.searchTitle(query, results.length);
     renderProducts(searchGrid, results);
     updateActiveNav('');
   }
@@ -569,20 +572,20 @@
      ═══════════════════════════════════════ */
   function applyPromoCode(codeStr) {
     if (!codeStr) {
-      showToast('يرجى كتابة كود الخصم أولاً ⚠️');
+      showToast(t('يرجى كتابة كود الخصم أولاً ⚠️'));
       return false;
     }
     const cleanCode = codeStr.trim().toUpperCase();
     const promo = PROMO_CODES[cleanCode];
 
     if (!promo) {
-      showToast(`عذراً، كود الخصم "${cleanCode}" غير صالح أو منتهي الصلاحية ❌`);
+      showToast(I18N.msg.promoInvalid(cleanCode));
       return false;
     }
 
     const subtotal = getCartSubtotal();
     if (subtotal < promo.minTotal) {
-      showToast(`هذا الكود يتطلب حداً أدنى للطلب بقيمة ${promo.minTotal} ${STORE_CONFIG.currency} ⚠️`);
+      showToast(I18N.msg.promoMin(promo.minTotal, I18N.cur()));
       return false;
     }
 
@@ -594,7 +597,7 @@
     updatePromoUI();
     updateCartUI();
     updateCheckoutCalculations();
-    showToast(`تم تطبيق كود الخصم "${cleanCode}" بنجاح! 🎉`);
+    showToast(I18N.msg.promoApplied(cleanCode));
     return true;
   }
 
@@ -603,7 +606,7 @@
     updatePromoUI();
     updateCartUI();
     updateCheckoutCalculations();
-    showToast('تم إلغاء كود الخصم');
+    showToast(t('تم إلغاء كود الخصم'));
   }
 
   function calculateDiscount(subtotal) {
@@ -626,11 +629,11 @@
   function updatePromoUI() {
     if (activePromoCode) {
       appliedPromoTag.style.display = 'flex';
-      promoCodeName.textContent = `${activePromoCode.code} (${activePromoCode.label})`;
+      promoCodeName.textContent = `${activePromoCode.code} (${t(activePromoCode.label)})`;
       cartPromoInput.value = '';
 
       modalAppliedPromoTag.style.display = 'flex';
-      modalPromoCodeName.textContent = `${activePromoCode.code} (${activePromoCode.label})`;
+      modalPromoCodeName.textContent = `${activePromoCode.code} (${t(activePromoCode.label)})`;
       modalPromoInput.value = '';
     } else {
       appliedPromoTag.style.display = 'none';
@@ -682,7 +685,7 @@
 
     saveCart();
     updateCartUI();
-    showToast(`تمت إضافة "${product.name}" إلى السلة 🛍️`);
+    showToast(I18N.msg.addedToCart(t(product.name)));
   }
 
   function removeFromCart(index) {
@@ -709,7 +712,7 @@
   function updateCartUI() {
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
     cartCount.textContent = totalItems;
-    cartDrawerCount.textContent = `${totalItems} منتج`;
+    cartDrawerCount.textContent = I18N.msg.items(totalItems);
 
     if (totalItems > 0) {
       cartCount.classList.add('show');
@@ -740,8 +743,8 @@
       let variantText = '';
       if (item.selectedSize || item.selectedColor) {
         const parts = [];
-        if (item.selectedSize) parts.push(`المقاس: ${item.selectedSize}`);
-        if (item.selectedColor) parts.push(`اللون: ${item.selectedColor}`);
+        if (item.selectedSize) parts.push(`${t('المقاس:')} ${item.selectedSize}`);
+        if (item.selectedColor) parts.push(`${t('اللون:')} ${t(item.selectedColor)}`);
         variantText = `<small style="display:block; color:var(--clr-text-muted); font-size:0.75rem;">${parts.join(' · ')}</small>`;
       }
 
@@ -750,21 +753,21 @@
         <div class="cart-item-info">
           <h4 class="ci-name"></h4>
           ${variantText}
-          <div class="ci-price">${item.price * item.qty} ${STORE_CONFIG.currency}</div>
+          <div class="ci-price">${item.price * item.qty} ${I18N.cur()}</div>
           <div class="cart-item-actions">
             <div class="qty-control">
-              <button class="qty-btn minus-btn" aria-label="تقليل"><i class="fa-solid fa-minus"></i></button>
+              <button class="qty-btn minus-btn" aria-label="${t('تقليل')}"><i class="fa-solid fa-minus"></i></button>
               <span class="ci-qty">${item.qty}</span>
-              <button class="qty-btn plus-btn" aria-label="زيادة"><i class="fa-solid fa-plus"></i></button>
+              <button class="qty-btn plus-btn" aria-label="${t('زيادة')}"><i class="fa-solid fa-plus"></i></button>
             </div>
             <button class="remove-btn remove-cart-btn">
-              <i class="fa-solid fa-trash-can"></i> حذف
+              <i class="fa-solid fa-trash-can"></i> ${t('حذف')}
             </button>
           </div>
         </div>
       `;
 
-      div.querySelector('.ci-name').textContent = item.name;
+      div.querySelector('.ci-name').textContent = t(item.name);
 
       div.querySelector('.minus-btn').addEventListener('click', () => updateQtyByIndex(index, -1));
       div.querySelector('.plus-btn').addEventListener('click', () => updateQtyByIndex(index, 1));
@@ -778,23 +781,23 @@
     const shipping = calculateShipping(subtotal);
     const finalTotal = Math.max(0, subtotal - discount + shipping);
 
-    cartSubtotalEl.textContent = `${subtotal} ${STORE_CONFIG.currency}`;
+    cartSubtotalEl.textContent = `${subtotal} ${I18N.cur()}`;
     if (discount > 0) {
       cartDiscountRow.style.display = 'flex';
-      cartDiscountAmount.textContent = `- ${discount} ${STORE_CONFIG.currency}`;
+      cartDiscountAmount.textContent = `- ${discount} ${I18N.cur()}`;
     } else {
       cartDiscountRow.style.display = 'none';
     }
 
     if (shipping === 0) {
-      cartShippingAmount.innerHTML = '<i class="fa-solid fa-truck-fast"></i> مجاني';
+      cartShippingAmount.innerHTML = '<i class="fa-solid fa-truck-fast"></i> ' + t('مجاني');
       cartShippingAmount.className = 'text-success';
     } else {
-      cartShippingAmount.textContent = `${shipping} ${STORE_CONFIG.currency}`;
+      cartShippingAmount.textContent = `${shipping} ${I18N.cur()}`;
       cartShippingAmount.className = '';
     }
 
-    cartTotalEl.textContent = `${finalTotal} ${STORE_CONFIG.currency}`;
+    cartTotalEl.textContent = `${finalTotal} ${I18N.cur()}`;
   }
 
   /* ═══════════════════════════════════════
@@ -802,7 +805,7 @@
      ═══════════════════════════════════════ */
   function openCheckoutModal() {
     if (cart.length === 0) {
-      showToast('سلة المشتريات فارغة حالياً ⚠️');
+      showToast(t('سلة المشتريات فارغة حالياً ⚠️'));
       return;
     }
 
@@ -829,7 +832,7 @@
       if (item.selectedSize || item.selectedColor) {
         const parts = [];
         if (item.selectedSize) parts.push(item.selectedSize);
-        if (item.selectedColor) parts.push(item.selectedColor);
+        if (item.selectedColor) parts.push(t(item.selectedColor));
         variant = ` (${parts.join(', ')})`;
       }
 
@@ -837,12 +840,12 @@
         <img src="${encodeURI(item.image)}" alt="">
         <div class="modal-cart-item-title">
           <span class="m-title"></span>
-          <div class="modal-cart-item-qty">الكمية: ${item.qty} × ${item.price} ${STORE_CONFIG.currency}</div>
+          <div class="modal-cart-item-qty">${t('الكمية:')} ${item.qty} × ${item.price} ${I18N.cur()}</div>
         </div>
-        <div class="modal-cart-item-price">${item.qty * item.price} ${STORE_CONFIG.currency}</div>
+        <div class="modal-cart-item-price">${item.qty * item.price} ${I18N.cur()}</div>
       `;
 
-      row.querySelector('.m-title').textContent = item.name + variant;
+      row.querySelector('.m-title').textContent = t(item.name) + variant;
       modalCartItemsList.appendChild(row);
     });
   }
@@ -853,23 +856,23 @@
     const shipping = calculateShipping(subtotal);
     const finalTotal = Math.max(0, subtotal - discount + shipping);
 
-    modalSubtotal.textContent = `${subtotal} ${STORE_CONFIG.currency}`;
+    modalSubtotal.textContent = `${subtotal} ${I18N.cur()}`;
     if (discount > 0) {
       modalDiscountRow.style.display = 'flex';
-      modalDiscountAmount.textContent = `- ${discount} ${STORE_CONFIG.currency}`;
+      modalDiscountAmount.textContent = `- ${discount} ${I18N.cur()}`;
     } else {
       modalDiscountRow.style.display = 'none';
     }
 
     if (shipping === 0) {
-      modalShippingAmount.innerHTML = '<i class="fa-solid fa-truck-fast"></i> مجاني';
+      modalShippingAmount.innerHTML = '<i class="fa-solid fa-truck-fast"></i> ' + t('مجاني');
       modalShippingAmount.className = 'text-success';
     } else {
-      modalShippingAmount.textContent = `${shipping} ${STORE_CONFIG.currency}`;
+      modalShippingAmount.textContent = `${shipping} ${I18N.cur()}`;
       modalShippingAmount.className = '';
     }
 
-    modalGrandTotal.textContent = `${finalTotal} ${STORE_CONFIG.currency}`;
+    modalGrandTotal.textContent = `${finalTotal} ${I18N.cur()}`;
   }
 
   function setupModalPaymentTabs() {
@@ -914,7 +917,7 @@
       } else if (val.startsWith('5')) {
         cardBrandLogo.innerHTML = '<i class="fa-brands fa-cc-mastercard"></i>';
       } else if (val.startsWith('5078') || val.startsWith('6')) {
-        cardBrandLogo.innerHTML = '<i class="fa-solid fa-shield"></i> ميزة';
+        cardBrandLogo.innerHTML = '<i class="fa-solid fa-shield"></i> ' + t('ميزة');
       } else {
         cardBrandLogo.innerHTML = '<i class="fa-solid fa-credit-card"></i>';
       }
@@ -988,7 +991,7 @@
     }
 
     if (!valid) {
-      showToast('يرجى تصحيح أخطاء العنوان والبيانات الشخصية ⚠️');
+      showToast(t('يرجى تصحيح أخطاء العنوان والبيانات الشخصية ⚠️'));
       return;
     }
 
@@ -1003,11 +1006,11 @@
     // تجهيز حالة الزر للتحميل
     const originalBtnHtml = confirmCheckoutBtn.innerHTML;
     confirmCheckoutBtn.disabled = true;
-    confirmCheckoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري تأكيد الطلب ومعالجة الدفع...';
+    confirmCheckoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + I18N.msg.confirming();
 
     // توليد رقم الطلب
     const orderNumber = 'MKT-' + Math.floor(100000 + Math.random() * 900000);
-    const orderDate = new Date().toLocaleDateString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
+    const orderDate = new Date().toLocaleDateString(I18N.isEn() ? 'en-GB' : 'ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
 
     // تجهيز كائن الطلب لإرساله للباك إند
     const orderPayload = {
@@ -1039,7 +1042,7 @@
     try {
       // 1. الدفع عبر Stripe
       if (selectedPaymentMethod === 'stripe') {
-        const res = await fetch('/api/checkout/stripe', {
+        const res = await fetch(API_BASE + '/api/checkout/stripe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ order: orderPayload })
@@ -1061,7 +1064,7 @@
 
       // 2. الدفع عبر Paymob (بطاقة أو محفظة)
       if (selectedPaymentMethod === 'card' || selectedPaymentMethod === 'wallet') {
-        const res = await fetch('/api/checkout/paymob', {
+        const res = await fetch(API_BASE + '/api/checkout/paymob', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ order: orderPayload, paymentSubtype: selectedPaymentMethod })
@@ -1082,7 +1085,7 @@
       }
 
       // 3. الدفع عند الاستلام (COD) أو إنستاباي
-      const res = await fetch('/api/orders', {
+      const res = await fetch(API_BASE + '/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload)
@@ -1099,12 +1102,17 @@
       });
 
       // إعداد رسالة الواتساب كنسخة إضافية للعميل
-      let paymentDesc = selectedPaymentMethod === 'cod' ? '💵 الدفع عند الاستلام نقداً (كاش)' : '🏦 إنستاباي / تحويل بنكي فوري';
-      let msg = `🛍️ *فاتورة طلب معتمد — متجر ${STORE_CONFIG.storeName}*\n`;
-      msg += `رقم الطلب: *#${orderNumber}*\n`;
-      msg += `المبلغ المستحق: ${grandTotal} ${STORE_CONFIG.currency}\n`;
-      msg += `طريقة الدفع: ${paymentDesc}\n`;
-      msg += `العميل: ${name} (${phone})\nالعنوان: ${address}\n`;
+      let paymentDesc = selectedPaymentMethod === 'cod' ? I18N.msg.waInvoiceCod() : I18N.msg.waInvoicePaid();
+      let msg = I18N.msg.waInvoice({
+        storeName: STORE_CONFIG.storeName,
+        orderNumber: orderNumber,
+        grandTotal: grandTotal,
+        currency: I18N.cur(),
+        paymentDesc: paymentDesc,
+        name: name,
+        phone: phone,
+        address: address
+      });
 
       const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, '_blank', 'noopener,noreferrer');
@@ -1124,7 +1132,14 @@
         status: 'confirmed'
       });
 
-      let msg = `🛍️ *طلب جديد — متجر ${STORE_CONFIG.storeName}*\nرقم الطلب: *#${orderNumber}*\nالإجمالي: ${grandTotal} ${STORE_CONFIG.currency}\nالعميل: ${name} (${phone})`;
+      let msg = I18N.msg.waFallback({
+        storeName: STORE_CONFIG.storeName,
+        orderNumber: orderNumber,
+        grandTotal: grandTotal,
+        currency: I18N.cur(),
+        name: name,
+        phone: phone
+      });
       window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
       window.location.href = `/order-success.html?order_id=${orderNumber}&gateway=${selectedPaymentMethod}&mode=local`;
     } finally {
@@ -1155,7 +1170,7 @@
 
   function updateOrdersBadge() {
     ordersCount.textContent = orders.length;
-    ordersDrawerBadge.textContent = `${orders.length} طلب`;
+    ordersDrawerBadge.textContent = I18N.msg.orders(orders.length);
     if (orders.length > 0) {
       ordersCount.classList.add('show');
     } else {
@@ -1178,11 +1193,11 @@
       const card = document.createElement('div');
       card.className = 'order-history-card';
 
-      const itemsSummary = order.items.map(i => `${i.name} (×${i.qty})`).join('، ');
+      const itemsSummary = order.items.map(i => `${t(i.name)} (×${i.qty})`).join(I18N.isEn() ? ', ' : '، ');
 
       card.innerHTML = `
         <div class="order-history-header">
-          <span class="order-number">طلب رقم: #${order.orderId}</span>
+          <span class="order-number">${t('طلب رقم:')} #${order.orderId}</span>
           <span class="order-date">${order.date}</span>
         </div>
 
@@ -1190,30 +1205,30 @@
           <div class="timeline-track-bar"></div>
           <div class="tracking-step done">
             <span class="tracking-dot"><i class="fa-solid fa-check"></i></span>
-            <span>تم التأكيد</span>
+            <span>${t('تم التأكيد')}</span>
           </div>
           <div class="tracking-step done">
             <span class="tracking-dot"><i class="fa-solid fa-box"></i></span>
-            <span>جاري التجهيز</span>
+            <span>${t('جاري التجهيز')}</span>
           </div>
           <div class="tracking-step">
             <span class="tracking-dot"><i class="fa-solid fa-truck"></i></span>
-            <span>مع المندوب</span>
+            <span>${t('مع المندوب')}</span>
           </div>
           <div class="tracking-step">
             <span class="tracking-dot"><i class="fa-solid fa-house"></i></span>
-            <span>تم التسليم</span>
+            <span>${t('تم التسليم')}</span>
           </div>
         </div>
 
         <div class="order-history-items">
-          <strong>الأصناف:</strong> ${escapeHTML(itemsSummary)}
+          <strong>${t('الأصناف:')}</strong> ${escapeHTML(itemsSummary)}
         </div>
 
         <div class="order-history-total">
-          <span>الإجمالي: <strong class="text-primary">${order.grandTotal} ${STORE_CONFIG.currency}</strong></span>
+          <span>${t('الإجمالي:')} <strong class="text-primary">${order.grandTotal} ${I18N.cur()}</strong></span>
           <button class="btn-primary-sm reorder-btn" style="padding: 6px 14px; font-size: 0.78rem;">
-            <i class="fa-solid fa-rotate-right"></i> إعادة الطلب
+            <i class="fa-solid fa-rotate-right"></i> ${t('إعادة الطلب')}
           </button>
         </div>
       `;
@@ -1224,7 +1239,7 @@
         });
         closeAllDrawers();
         openDrawer(cartDrawer);
-        showToast('تمت إضافة عناصر الطلب السابق إلى السلة بنجاح 🔄');
+        showToast(t('تمت إضافة عناصر الطلب السابق إلى السلة بنجاح 🔄'));
       });
 
       ordersListEl.appendChild(card);
@@ -1244,7 +1259,7 @@
 
     // الصور والمعرض
     qvMainImg.src = encodeURI(product.image);
-    qvBadge.textContent = product.badge || (product.oldPrice ? 'عرض خاص' : '');
+    qvBadge.textContent = product.badge ? t(product.badge) : (product.oldPrice ? t('عرض خاص') : '');
     qvBadge.style.display = (product.badge || product.oldPrice) ? '' : 'none';
 
     qvThumbsRow.innerHTML = '';
@@ -1253,7 +1268,7 @@
       const thumb = document.createElement('img');
       thumb.className = `qv-thumb ${idx === 0 ? 'active' : ''}`;
       thumb.src = encodeURI(imgUrl);
-      thumb.alt = product.name;
+      thumb.alt = t(product.name);
       thumb.addEventListener('click', () => {
         qvMainImg.src = encodeURI(imgUrl);
         $$('.qv-thumb').forEach(t => t.classList.remove('active'));
@@ -1262,16 +1277,16 @@
       qvThumbsRow.appendChild(thumb);
     });
 
-    qvCategory.textContent = product.category === 'clothes' ? 'ملابس وأزياء' :
-                             product.category === 'food' ? 'سوبرماركت ومنتجات غذائية' : 'أدوات منزلية';
-    qvTitle.textContent = product.name;
+    qvCategory.textContent = product.category === 'clothes' ? t('ملابس وأزياء') :
+                             product.category === 'food' ? t('سوبرماركت ومنتجات غذائية') : t('أدوات منزلية');
+    qvTitle.textContent = t(product.name);
     qvRating.textContent = product.rating || 4.9;
-    qvReviews.textContent = `(${product.reviewsCount || 35} مراجعة)`;
-    qvPrice.textContent = `${product.price} ${STORE_CONFIG.currency}`;
-    qvOldPrice.textContent = product.oldPrice ? `${product.oldPrice} ${STORE_CONFIG.currency}` : '';
-    qvDesc.textContent = product.description;
+    qvReviews.textContent = I18N.msg.reviews(product.reviewsCount || 35);
+    qvPrice.textContent = `${product.price} ${I18N.cur()}`;
+    qvOldPrice.textContent = product.oldPrice ? `${product.oldPrice} ${I18N.cur()}` : '';
+    qvDesc.textContent = t(product.description);
 
-    qvStockTicker.innerHTML = `<i class="fa-solid fa-fire text-danger"></i> متبقي ${product.stockLeft || 3} قطع فقط في المخزن`;
+    qvStockTicker.innerHTML = `<i class="fa-solid fa-fire text-danger"></i> ${I18N.msg.stock(product.stockLeft || 3)}`;
 
     // المقاسات (للملابس)
     if (product.sizes && product.sizes.length) {
@@ -1281,7 +1296,7 @@
       product.sizes.forEach((s, idx) => {
         const pill = document.createElement('div');
         pill.className = `size-pill ${idx === 0 ? 'active' : ''}`;
-        pill.textContent = s;
+        pill.textContent = t(s);
         pill.addEventListener('click', () => {
           qvSelectedSize = s;
           $$('.size-pill').forEach(p => p.classList.remove('active'));
@@ -1299,16 +1314,16 @@
       qvColorGroup.style.display = '';
       qvColorsRow.innerHTML = '';
       qvSelectedColor = product.colors[0].name;
-      qvSelectedColorName.textContent = qvSelectedColor;
+      qvSelectedColorName.textContent = t(qvSelectedColor);
 
       product.colors.forEach((c, idx) => {
         const swatch = document.createElement('div');
         swatch.className = `color-swatch ${idx === 0 ? 'active' : ''}`;
         swatch.style.backgroundColor = c.hex;
-        swatch.title = c.name;
+        swatch.title = t(c.name);
         swatch.addEventListener('click', () => {
           qvSelectedColor = c.name;
-          qvSelectedColorName.textContent = c.name;
+          qvSelectedColorName.textContent = t(c.name);
           $$('.color-swatch').forEach(s => s.classList.remove('active'));
           swatch.classList.add('active');
         });
@@ -1325,7 +1340,7 @@
       Object.entries(product.specs).forEach(([k, v]) => {
         const line = document.createElement('div');
         line.className = 'spec-line';
-        line.innerHTML = `<strong>${escapeHTML(k)}:</strong> <span>${escapeHTML(v)}</span>`;
+        line.innerHTML = `<strong>${escapeHTML(t(k))}:</strong> <span>${escapeHTML(t(v))}</span>`;
         qvSpecsTable.appendChild(line);
       });
       qvSpecsTable.style.display = '';
@@ -1364,10 +1379,10 @@
 
     if (index > -1) {
       favorites.splice(index, 1);
-      showToast(`تمت إزالة "${prod ? prod.name : ''}" من المفضلة`);
+      showToast(I18N.msg.removedFromFav(prod ? t(prod.name) : ''));
     } else {
       favorites.push(productId);
-      showToast(`تمت إضافة "${prod ? prod.name : ''}" إلى المفضلة ❤️`);
+      showToast(I18N.msg.addedToFav(prod ? t(prod.name) : ''));
     }
 
     saveFavorites();
@@ -1381,13 +1396,13 @@
       const isFav = favorites.includes(id);
       btn.classList.toggle('active', isFav);
       btn.querySelector('i').className = isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-      btn.title = isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة';
+      btn.title = isFav ? t('إزالة من المفضلة') : t('إضافة للمفضلة');
     });
   }
 
   function updateFavoritesUI() {
     favCount.textContent = favorites.length;
-    favDrawerCount.textContent = `${favorites.length} منتج`;
+    favDrawerCount.textContent = I18N.msg.items(favorites.length);
 
     if (favorites.length > 0) {
       favCount.classList.add('show');
@@ -1421,19 +1436,19 @@
         <img class="fav-item-img" src="${encodeURI(item.image)}" alt="">
         <div class="fav-item-info">
           <h4 class="fi-name"></h4>
-          <div class="fi-price">${item.price} ${STORE_CONFIG.currency}</div>
+          <div class="fi-price">${item.price} ${I18N.cur()}</div>
           <div class="cart-item-actions">
             <button class="add-to-cart-btn btn-sm-fav" data-id="${item.id}">
-              <i class="fa-solid fa-cart-plus"></i> أضف للسلة
+              <i class="fa-solid fa-cart-plus"></i> ${t('أضف للسلة')}
             </button>
             <button class="remove-btn remove-fav-btn" data-id="${item.id}">
-              <i class="fa-solid fa-trash-can"></i> حذف
+              <i class="fa-solid fa-trash-can"></i> ${t('حذف')}
             </button>
           </div>
         </div>
       `;
 
-      div.querySelector('.fi-name').textContent = item.name;
+      div.querySelector('.fi-name').textContent = t(item.name);
 
       div.querySelector('.btn-sm-fav').addEventListener('click', () => {
         addToCart(item);
@@ -1458,7 +1473,7 @@
 
     closeAllDrawers();
     openDrawer(cartDrawer);
-    showToast('تم نقل جميع عناصر المفضلة إلى السلة 🛍️');
+    showToast(t('تم نقل جميع عناصر المفضلة إلى السلة 🛍️'));
   }
 
   /* ═══════════════════════════════════════
@@ -1713,7 +1728,7 @@
     const sizeGuideBtn = $('#openSizeGuideBtn');
     if (sizeGuideBtn) {
       sizeGuideBtn.addEventListener('click', () => {
-        showToast('دليل المقاسات: S (صدر 96سم)، M (صدر 102سم)، L (صدر 108سم)، XL (صدر 114سم)، XXL (صدر 120سم)');
+        showToast(t('دليل المقاسات: S (صدر 96سم)، M (صدر 102سم)، L (صدر 108سم)، XL (صدر 114سم)، XXL (صدر 120سم)'));
       });
     }
 
@@ -1725,8 +1740,8 @@
         if (textToCopy && navigator.clipboard) {
           navigator.clipboard.writeText(textToCopy).then(() => {
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ!';
-            showToast('تم نسخ الرقم للحافظة بنجاح ✅');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + t('تم النسخ!');
+            showToast(t('تم نسخ الرقم للحافظة بنجاح ✅'));
             setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
           });
         }
@@ -1781,6 +1796,41 @@
 
     // إعداد واجهة الدفع المتعددة التفاعلية
     setupModalPaymentTabs();
+  }
+
+  /* ═══════════════════════════════════════
+     إعادة العرض عند تغيير اللغة
+     ═══════════════════════════════════════ */
+  function refreshLocale() {
+    const origScroll = window.scrollTo;
+    window.scrollTo = function () {};
+    try {
+      renderProducts(popularGrid, PRODUCTS.filter(p => p.popular));
+      renderProducts(offersGrid, PRODUCTS.filter(p => p.oldPrice !== null));
+      if (searchSection.style.display !== 'none' && searchInput.value.trim()) {
+        performSearch(searchInput.value);
+      } else if (currentSection && currentSection !== 'home') {
+        showCategory(currentSection);
+      } else {
+        showHome();
+      }
+      updateCartUI();
+      updateFavoritesUI();
+      updateOrdersBadge();
+      renderOrdersList();
+      updatePromoUI();
+      if (checkoutModal.classList.contains('open')) {
+        populateCheckoutOrderSummary();
+        updateCheckoutCalculations();
+      }
+      syncHeartIcons();
+    } finally {
+      window.scrollTo = origScroll;
+    }
+  }
+
+  if (window.I18N) {
+    I18N.onChange(refreshLocale);
   }
 
   /* ═══════════════════════════════════════

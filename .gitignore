@@ -13,3 +13,6 @@ package-lock.json
 Thumbs.db
 .vscode/
 .idea/
+
+# Mobile build artifacts
+mobile app/mobile-web/

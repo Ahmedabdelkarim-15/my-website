@@ -1,0 +1,12 @@
+{
+  "appId": "com.marketeg.app",
+  "appName": "market.com",
+  "webDir": "mobile-web",
+  "backgroundColor": "#f8faf9",
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}

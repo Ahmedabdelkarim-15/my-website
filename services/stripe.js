@@ -109,8 +109,7 @@ function constructWebhookEvent(rawBody, signatureHeader) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!client || !webhookSecret || webhookSecret === 'YOUR_STRIPE_WEBHOOK_SECRET') {
-        console.warn('⚠️ [Stripe] Webhook secret not set, parsing payload directly.');
-        return typeof rawBody === 'string' ? JSON.parse(rawBody) : JSON.parse(rawBody.toString('utf8'));
+        throw new Error('STRIPE_WEBHOOK_SECRET is not configured. Webhook signature cannot be verified.');
     }
 
     return client.webhooks.constructEvent(rawBody, signatureHeader, webhookSecret);

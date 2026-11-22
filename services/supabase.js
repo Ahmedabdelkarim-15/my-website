@@ -175,7 +175,11 @@ async function getAdminOrders(filters = {}) {
             }
 
             if (search) {
-                query = query.or(`order_number.ilike.%${search}%,customer_name.ilike.%${search}%,customer_phone.ilike.%${search}%`);
+                // Sanitize search query to prevent PostgREST syntax injection
+                const cleanSearch = String(search).replace(/[^a-zA-Z0-9\u0600-\u06FF\s-_]/g, '').trim();
+                if (cleanSearch) {
+                    query = query.or(`order_number.ilike.%${cleanSearch}%,customer_name.ilike.%${cleanSearch}%,customer_phone.ilike.%${cleanSearch}%`);
+                }
             }
 
             const { data, count, error } = await query;

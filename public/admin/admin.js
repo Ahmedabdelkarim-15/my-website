@@ -671,7 +671,7 @@
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
-        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${escapeHtml(message)}</span>`;
 
         container.appendChild(toast);
         setTimeout(() => {

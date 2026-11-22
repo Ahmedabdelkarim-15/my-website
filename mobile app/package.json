@@ -1,0 +1,20 @@
+{
+  "name": "market-mobile-app",
+  "version": "1.0.0",
+  "description": "Market.com - Bilingual Android & iOS Mobile App (Capacitor)",
+  "main": "index.html",
+  "scripts": {
+    "prepare:mobile": "node scripts/prepare-mobile.js",
+    "cap:sync": "npm run prepare:mobile && npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/ios": "^6.1.2"
+  }
+}
